@@ -1,4 +1,5 @@
 import sqlite3
+import uuid
 
 
 class SqlDatabase:
@@ -20,7 +21,8 @@ class SqlDatabase:
         CREATE TABLE IF NOT EXISTS  chats (
           chatID INTEGER PRIMARY KEY,
           chatName TEXT,
-          profileLocation TEXT
+          profileLocation TEXT,
+          UUID TEXT
         );
         ''')
         self.db.execute('''
@@ -98,9 +100,10 @@ class SqlDatabase:
         conn.close()
         return data
 
-    def get_existing_chats(self):
+    @staticmethod
+    def get_existing_chats():
         # Store chats for return
-        # [[chatID, chatName, profileLocation, bannedUsers, [users]]]
+        # [[chatID, chatName, profileLocation, uuid, bannedUsers, [users]]]
         chats = []
         conn = sqlite3.connect('meshage.db', check_same_thread=False)
         cur = conn.cursor()
@@ -110,6 +113,7 @@ class SqlDatabase:
             chat_id = row[0]
             chat_name = row[1]
             profile_location = row[2]
+            uuid = row[3]
             cur2.execute('SELECT users.publicIpAddress FROM users INNER JOIN userToChat ON users.userID = userToChat.userID WHERE userToChat.chatID = ' + str(chat_id))
             user_data = cur2.fetchall()
             users = []
@@ -120,7 +124,7 @@ class SqlDatabase:
             banned_users = []
             for user in banned_user_data:
                 banned_users.append(user[0])
-            chats.append([chat_id, chat_name, profile_location, banned_users, users])
+            chats.append([chat_id, chat_name, profile_location, uuid, banned_users, users])
         conn.close()
         return chats
 
@@ -128,14 +132,18 @@ class SqlDatabase:
     def add_chat(name, profile_location, users):
         conn = sqlite3.connect('meshage.db', check_same_thread=False)
         cur = conn.cursor()
-        cur.execute('INSERT INTO chats (chatName, profileLocation) VALUES ("' + name + '", "' + profile_location + '")')
+        chat_uuid = uuid.uuid1()
+        cur.execute('INSERT INTO chats (chatName, profileLocation, UUID) VALUES ("' + name + '", "' + profile_location + '", "' + str(chat_uuid) + '")')
         cur.execute('SELECT last_insert_rowid()')
         rowid = cur.fetchone()
         for user in users:
             cur.execute('SELECT userID FROM users WHERE publicIpAddress = "' + user + '"')
             user_ids = cur.fetchall()
             for row in user_ids:
-                cur.execute('INSERT INTO userToChat (userID, chatID) VALUES (' + row[0] + ', ' + rowid + ')')
+                cur.execute('INSERT INTO userToChat (userID, chatID) VALUES (' + row[0] + ', ' + rowid[0] + ')')
+        return [rowid, chat_uuid]
+        conn.commit()
+        conn.close()
 
     def add_user_to_chat(self, user_address, chat_id):
         conn = sqlite3.connect('meshage.db', check_same_thread=False)

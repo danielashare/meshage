@@ -43,13 +43,14 @@ class I:
             conn.close()
             self.rsa = RsaEncryption.RsaEncryption(generate=False)
 
-    def send(self, string, **kwargs):
+    def send(self, string, chat, **kwargs):
         encrypt = True
         for key, value in kwargs.iteritems():
             if key == "encrypt":
                 encrypt = value
         for connection in self.connections:
-            connection[2].sendall(self.rsa.encrypt(connection[3], string) if encrypt else string)
+            if self.user_in_chat(connection[0], chat):
+                connection[2].sendall(self.rsa.encrypt(connection[3], string) if encrypt else string)
 
     def sendto(self, string, **kwargs):
         encrypt = True
@@ -230,3 +231,10 @@ class I:
             if chat.chat_name == chat_name:
                 return chat
         return None
+
+    @staticmethod
+    def user_in_chat(address, chat):
+        for user in chat.users:
+            if user == address:
+                return True
+        return False

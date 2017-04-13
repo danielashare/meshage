@@ -59,6 +59,8 @@ while 1:
                 currentChat = me.join_chat(text.split(' ')[1])
                 if currentChat is None:
                     print "Chat not found"
+            elif text.split(' ')[0] == '/createchat':
+                Chat.Chat.create_chat(text.split(' ')[1], text.split(' ')[2], sql, me)
         else:
             if currentChat is not None:
                 me.send(messages.encode(messages.MESSAGE, string=text[:212]), encrypt=True)
