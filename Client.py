@@ -41,6 +41,11 @@ class Client:
         elif command == received.REQUEST_PUBLIC_KEY:
             print time.time(), ": Received request for public key from ", self.address[0]
             me.send_public_key(ip=self.address[0])
+        elif command == received.JOIN_CHAT_NAME:
+
+        elif command == received.JOIN_CHAT_PPL:
+        elif command == received.JOIN_CHAT_USERS:
+        elif command == received.JOIN_CHAT_BANNED_USERS:
         elif command == received.DISCONNECT:
             print time.time(), ": Received disconnect from ", self.address[0]
             me.remove_by_address(self.address[0])

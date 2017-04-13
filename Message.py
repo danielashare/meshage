@@ -11,6 +11,10 @@ class Message:
         self.PUBLIC_KEY = "06"
         self.REQUEST_INFO = "07"
         self.REQUEST_PUBLIC_KEY = "08"
+        self.JOIN_CHAT_NAME = "09"
+        self.JOIN_CHAT_PPL = "10"
+        self.JOIN_CHAT_USERS = "11"
+        self.JOIN_CHAT_BANNED_USERS = "12"
 
     def encode(self, cmd, **kwargs):
         string = kwargs.get('string')

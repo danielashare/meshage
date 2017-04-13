@@ -17,6 +17,13 @@ class Chat:
     def add_user(self, address):
         self.users.append(address)
         self.sql.add_user_to_chat(address, self.chat_id)
+        self.me.add_to_chat(address, self.chat_name, self.profile_picture_location, self.uuid, self.users, self.banned_users)
+
+    @staticmethod
+    def join_chat(name, ppl, uuid, users, banned_users, sql, me):
+        for user in users:
+            me.add_connection(user, me.port)
+
 
     @staticmethod
     def load_existing_chats(sql, me):

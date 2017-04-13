@@ -13,7 +13,7 @@ port = 9958
 # Initialising the class that deals with the sqlite database
 sql = SqlDatabase.SqlDatabase()
 # starting the class that deals connections from the host machine to remote users
-me = I.I(sql)
+me = I.I(sql, port)
 # Getting the local IP Address
 me.get_local_ip()
 # Getting the public IP address
@@ -37,6 +37,8 @@ while 1:
             if text.split(' ')[0] == '/add':
                 # Adding a connection
                 me.add_connection(text.split(' ')[1], port)
+                if currentChat is not None:
+                    currentChat.add_user(text.split(' ')[1])
             elif text.split(' ')[0] == '/exit':
                 # close all connections to remote clients
                 me.close_all()
@@ -63,6 +65,6 @@ while 1:
                 Chat.Chat.create_chat(text.split(' ')[1], text.split(' ')[2], sql, me)
         else:
             if currentChat is not None:
-                me.send(messages.encode(messages.MESSAGE, string=text[:212]), encrypt=True)
+                me.send(messages.encode(messages.MESSAGE, string=text[:212]), currentChat, encrypt=True)
             else:
                 print "You're not in a chat"

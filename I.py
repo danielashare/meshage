@@ -11,14 +11,16 @@ class I:
     # [[ip, port, socket, public key, username, profile picture location]]
     connections = []
 
-    def __init__(self, sql):
+    def __init__(self, sql, port):
         self.username = ""
         self.local_ip = ""
         self.public_ip = ""
+        self.port = port
         self.profile_picture_location = ""
         self.sql = sql
         self.rsa = None
         self.chats = []
+        self.chats_being_constructed = []
         conn = sqlite3.connect('meshage.db')
         cur = conn.cursor()
         if not self.sql.does_user_exist(id="0"):
@@ -149,7 +151,6 @@ class I:
 
     def send_information(self, **kwargs):
         messages = Message.Message()
-        global rsa
         for key, value in kwargs.iteritems():
             if key == "ip":
                 self.sendto(messages.encode(messages.USERNAME, string=self.username), ip=value, encrypt=True)
@@ -196,7 +197,7 @@ class I:
                 print time.time(), ": Added username to ", connection[0]
                 return
 
-    def add_profile_picture_location(self,ip, ppl):
+    def add_profile_picture_location(self, ip, ppl):
         for connection in self.connections:
             if connection[0] == ip:
                 connection[5] = ppl
@@ -224,7 +225,7 @@ class I:
     def list_chats(self):
         for chat in self.chats:
             print chat.chat_name
-            print "\tUsers: " + chat.users
+            print "\tUsers: " + str(chat.users)
 
     def join_chat(self, chat_name):
         for chat in self.chats:
@@ -238,3 +239,10 @@ class I:
             if user == address:
                 return True
         return False
+
+    def add_to_chat(self, address, name, ppl, uuid, users, banned_users):
+        message = Message.Message()
+        self.sendto(message.encode(message.JOIN_CHAT_NAME, string=str([uuid, name])), ip=address)
+        self.sendto(message.encode(message.JOIN_CHAT_PPL, string=str([uuid, ppl])), ip=address)
+        self.sendto(message.encode(message.JOIN_CHAT_USERS, string=str([uuid, users])), ip=address)
+        self.sendto(message.encode(message.JOIN_CHAT_BANNED_USERS, string=str([uuid, banned_users])), ip=address)

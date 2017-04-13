@@ -141,9 +141,16 @@ class SqlDatabase:
             user_ids = cur.fetchall()
             for row in user_ids:
                 cur.execute('INSERT INTO userToChat (userID, chatID) VALUES (' + row[0] + ', ' + rowid[0] + ')')
-        return [rowid, chat_uuid]
         conn.commit()
         conn.close()
+        return [rowid, chat_uuid]
+
+    def add_existing_chat(self, name, ppl, chat_uuid, users, banned_users):
+        conn = sqlite3.connect('meshage.db', check_same_thread=False)
+        cur = conn.cursor()
+        cur.execute('INSERT INTO chats (chatName, profileLocation, UUID) VALUES ("' + name + '", "' + ppl + '", "' + str(chat_uuid) + '")')
+        for user in users:
+            cur.execute('SELECT userID FROM users WHERE publicIpAddress = "' + user + '"')
 
     def add_user_to_chat(self, user_address, chat_id):
         conn = sqlite3.connect('meshage.db', check_same_thread=False)
