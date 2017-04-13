@@ -22,7 +22,7 @@ class Chat:
     def load_existing_chats(sql, me):
         chats = sql.get_existing_chats()
         for chat in chats:
-            me.chats.append(Chat(chat[0], chat[1], chat[2], chat[3] sql, me, banned=chat[4], users=chat[5]))
+            me.chats.append(Chat(chat[0], chat[1], chat[2], chat[3], sql, me, banned=chat[4], users=chat[5]))
 
     @staticmethod
     def create_chat(name, ppl, sql, me):
