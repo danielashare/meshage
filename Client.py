@@ -42,7 +42,7 @@ class Client:
             print time.time(), ": Received request for public key from ", self.address[0]
             me.send_public_key(ip=self.address[0])
         elif command == received.JOIN_CHAT_NAME:
-
+            me.
         elif command == received.JOIN_CHAT_PPL:
         elif command == received.JOIN_CHAT_USERS:
         elif command == received.JOIN_CHAT_BANNED_USERS:

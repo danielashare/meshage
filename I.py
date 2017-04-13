@@ -10,6 +10,7 @@ import Message
 class I:
     # [[ip, port, socket, public key, username, profile picture location]]
     connections = []
+    constructing_chats = []
 
     def __init__(self, sql, port):
         self.username = ""
@@ -246,3 +247,14 @@ class I:
         self.sendto(message.encode(message.JOIN_CHAT_PPL, string=str([uuid, ppl])), ip=address)
         self.sendto(message.encode(message.JOIN_CHAT_USERS, string=str([uuid, users])), ip=address)
         self.sendto(message.encode(message.JOIN_CHAT_BANNED_USERS, string=str([uuid, banned_users])), ip=address)
+
+    def construct_chat(self, uuid, **kwargs):
+        for key, value in kwargs.iteritems():
+            if key == 'name':
+                name = value
+            elif key == 'ppl':
+                ppl = value
+            elif key == 'users':
+                users = value
+            elif key == 'banned':
+                banned = value

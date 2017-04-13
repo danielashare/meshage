@@ -23,7 +23,7 @@ class Chat:
     def join_chat(name, ppl, uuid, users, banned_users, sql, me):
         for user in users:
             me.add_connection(user, me.port)
-
+        me.chats.append(Chat(sql.get_existing_chats(name, ppl, uuid, users, banned_users)), name, ppl, uuid, sql, me, users=users, banned=banned_users)
 
     @staticmethod
     def load_existing_chats(sql, me):
@@ -33,5 +33,5 @@ class Chat:
 
     @staticmethod
     def create_chat(name, ppl, sql, me):
-        row = sql.add_chat(name, ppl, [me.local_ip])
+        row = sql.add_new_chat(name, ppl, [me.local_ip])
         me.chats.append(Chat(row[0], name, ppl, row[1], sql, me, users=[me.local_ip]))

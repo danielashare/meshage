@@ -129,7 +129,7 @@ class SqlDatabase:
         return chats
 
     @staticmethod
-    def add_chat(name, profile_location, users):
+    def add_new_chat(name, profile_location, users):
         conn = sqlite3.connect('meshage.db', check_same_thread=False)
         cur = conn.cursor()
         chat_uuid = uuid.uuid1()
@@ -149,8 +149,19 @@ class SqlDatabase:
         conn = sqlite3.connect('meshage.db', check_same_thread=False)
         cur = conn.cursor()
         cur.execute('INSERT INTO chats (chatName, profileLocation, UUID) VALUES ("' + name + '", "' + ppl + '", "' + str(chat_uuid) + '")')
+        cur.execute('SELECT last_inserted_rowid()')
+        rowid = cur.fetchone()
         for user in users:
             cur.execute('SELECT userID FROM users WHERE publicIpAddress = "' + user + '"')
+            data = cur.fetchall()
+            for user_id in data:
+                cur.execute('INSERT INTO userToChat (userID, chatID) VALUES (' + user_id[0] + ', ' + rowid[0] + ')')
+        for user in banned_users:
+            cur.execute('SELECT userID FROM users WHERE publicIpAddress = "' + user + '"')
+            data = cur.fetchall()
+            for user_id in data:
+                cur.execute('INSERT INTO bannedUsers (userID, chatID) VALUES (' + user_id[0] + ', ' + rowid[0] + ')')
+        return rowid[0]
 
     def add_user_to_chat(self, user_address, chat_id):
         conn = sqlite3.connect('meshage.db', check_same_thread=False)
