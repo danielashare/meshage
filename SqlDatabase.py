@@ -114,13 +114,13 @@ class SqlDatabase:
             chat_name = row[1]
             profile_location = row[2]
             uuid = row[3]
-            cur2.execute('SELECT users.publicIpAddress FROM users INNER JOIN userToChat ON users.userID = userToChat.userID WHERE userToChat.chatID = ' + str(chat_id))
-            user_data = cur2.fetchall()
+            cur.execute('SELECT users.publicIpAddress FROM users INNER JOIN userToChat ON users.userID = userToChat.userID WHERE userToChat.chatID = ' + str(chat_id))
+            user_data = cur.fetchall()
             users = []
             for user in user_data:
                 users.append(user[0])
-            cur3.execute('SELECT users.publicIpAddress FROM users INNER JOIN bannedUsers ON users.userID = bannedUsers.userID WHERE bannedUsers.chatID = ' + str(chat_id))
-            banned_user_data = cur3.fetchall()
+            cur.execute('SELECT users.publicIpAddress FROM users INNER JOIN bannedUsers ON users.userID = bannedUsers.userID WHERE bannedUsers.chatID = ' + str(chat_id))
+            banned_user_data = cur.fetchall()
             banned_users = []
             for user in banned_user_data:
                 banned_users.append(user[0])
@@ -143,7 +143,7 @@ class SqlDatabase:
                 cur.execute('INSERT INTO userToChat (userID, chatID) VALUES (' + row[0] + ', ' + rowid[0] + ')')
         conn.commit()
         conn.close()
-        return [rowid, chat_uuid]
+        return [rowid[0], str(chat_uuid)]
 
     def add_existing_chat(self, name, ppl, chat_uuid, users, banned_users):
         conn = sqlite3.connect('meshage.db', check_same_thread=False)
@@ -161,6 +161,8 @@ class SqlDatabase:
             data = cur.fetchall()
             for user_id in data:
                 cur.execute('INSERT INTO bannedUsers (userID, chatID) VALUES (' + user_id[0] + ', ' + rowid[0] + ')')
+        conn.commit()
+        conn.close()
         return rowid[0]
 
     def add_user_to_chat(self, user_address, chat_id):
@@ -168,3 +170,12 @@ class SqlDatabase:
         cur = conn.cursor()
         data = self.get_user_data(user_address)
         cur.execute('INSERT INTO userToChat (userID, chatID) VALUES (' + data[0] + ', ' + chat_id + ')')
+        conn.commit()
+        conn.close()
+
+    def add_message(self, chat_id, user_id, message, file_location):
+        conn = sqlite3.connect('meshage.db', check_same_thread=False)
+        cur = conn.cursor()
+        cur.execute('INSERT INTO messages (chatID, userID, dateSent, message, fileLocation) VALUES (' + chat_id + ', ' + user_id + ', "' + message + '", "' + file_location + '")')
+        conn.commit()
+        conn.close()

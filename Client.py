@@ -20,6 +20,7 @@ class Client:
         received = Message.Message()
         me = client
         if command == received.MESSAGE:
+            self.sql.add_message(me.clients_current_chat(self.address), me.user_address_to_id(self.address), string, "")
             print (self.username if self.username is not None else str(self.address[0])) + " sent: " + string
         elif command == received.PUBLIC_KEY:
             print time.time(), ": Received public key from ", self.address[0]
@@ -42,10 +43,21 @@ class Client:
             print time.time(), ": Received request for public key from ", self.address[0]
             me.send_public_key(ip=self.address[0])
         elif command == received.JOIN_CHAT_NAME:
-            me.
+            details = str(string)[2:-2].split("', '")
+            me.construct_chat(details[0], name=details[1])
         elif command == received.JOIN_CHAT_PPL:
+            details = str(string)[2:-2].split("', '")
+            me.construct_chat(details[0], ppl=details[1])
         elif command == received.JOIN_CHAT_USERS:
+            details = [str(string)[2:].split("',")[0]]
+            details.append = str(string).split("', ['")[1][:-3].split("', '")
+            me.construct_chat(details[0], users=details[1])
         elif command == received.JOIN_CHAT_BANNED_USERS:
+            details = [str(string)[2:].split("',")[0]]
+            details.append = str(string).split("', ['")[1][:-3].split("', '")
+            me.construct_chat(details[0], banned=details[1])
+        elif command == received.CONNECT_CHAT:
+            me.user_rejoin_chat(self.address[0], string)
         elif command == received.DISCONNECT:
             print time.time(), ": Received disconnect from ", self.address[0]
             me.remove_by_address(self.address[0])

@@ -5,11 +5,13 @@ import time
 
 import RsaEncryption
 import Message
+import Chat
 
 
 class I:
-    # [[ip, port, socket, public key, username, profile picture location]]
+    # [[ip, port, socket, public key, username, profile picture location, current_chat_uuid]]
     connections = []
+    # [[uuid, name, set?, ppl, set?, users, set?, banned, set?]]
     constructing_chats = []
 
     def __init__(self, sql, port):
@@ -258,3 +260,57 @@ class I:
                 users = value
             elif key == 'banned':
                 banned = value
+
+        if len(I.constructing_chats) is not 0:
+            for chat in I.constructing_chats:
+                if uuid == chat[0]:
+                    if name is not None:
+                        chat[1] = name
+                        chat[2] = True
+                    if ppl is not None:
+                        chat[3] = ppl
+                        chat[4] = True
+                    if users is not None:
+                        chat[5] = users
+                        chat[6] = True
+                    if banned is not None:
+                        chat[7] = banned
+                        chat[8] = True
+        else:
+            I.constructing_chats.append([uuid, "", False, "", False, [], False, [], False])
+            for chat in I.constructing_chats:
+                if uuid == chat[0]:
+                    if name is not None:
+                        chat[1] = name
+                        chat[2] = True
+                    if ppl is not None:
+                        chat[3] = ppl
+                        chat[4] = True
+                    if users is not None:
+                        chat[5] = users
+                        chat[6] = True
+                    if banned is not None:
+                        chat[7] = banned
+                        chat[8] = True
+        for chat in I.constructing_chats:
+            if chat[2] and chat[4] and chat[6] and chat[8]:
+                Chat.Chat.join_chat(chat[1], chat[3], chat[0], chat[5], chat[7], self.sql, self)
+
+    def user_rejoin_chat(self, address, uuid):
+        for connection in self.connections:
+            if connection[0] == address:
+                connection[6] = uuid
+                return
+
+    def clients_current_chat(self, address):
+        for connection in self.connections:
+            if connection[0] == address:
+                self.chat_uuid_to_id(connection[6])
+
+    def chat_uuid_to_id(self, uuid):
+        for chat in self.chats:
+            if chat.uuid == uuid:
+                return chat.chat_id
+
+    def user_address_to_id(self, address):
+        return self.sql.get_user_data(address)[0]

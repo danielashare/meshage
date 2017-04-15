@@ -15,6 +15,7 @@ class Message:
         self.JOIN_CHAT_PPL = "10"
         self.JOIN_CHAT_USERS = "11"
         self.JOIN_CHAT_BANNED_USERS = "12"
+        self.CONNECT_CHAT = "13"
 
     def encode(self, cmd, **kwargs):
         string = kwargs.get('string')
