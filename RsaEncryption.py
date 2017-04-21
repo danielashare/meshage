@@ -28,8 +28,8 @@ class RsaEncryption:
             conn.close()
 
     @staticmethod
-    def encrypt(public_key, message):
-        public_key = RSA.importKey(public_key)
+    def encrypt(pub_key, message):
+        public_key = RSA.importKey(pub_key)
         cipher = PKCS1_OAEP.new(public_key)
         cipher_text = cipher.encrypt(message)
         return cipher_text

@@ -89,8 +89,10 @@ class I:
                 print "Connected to " + str(host) + " on port " + str(port)
             except:
                 print "Host could not be found, make sure the IP address you entered is correct and that the host's Server is running."
+                return False
         else:
             print time.time(), ": Connection to ", host, " already exists"
+        return True
 
     def close_all(self):
         for connection in self.connections:
@@ -126,14 +128,17 @@ class I:
         conn.close()
 
     def get_local_ip(self):
-        self.local_ip = ([l for l in (
-        [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [
-            [(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in
-             [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0])
-        conn = sqlite3.connect('meshage.db')
-        conn.execute('UPDATE users SET localIpAddress = "' + self.local_ip + '" WHERE userID = 0')
-        conn.commit()
-        conn.close()
+        try:
+            self.local_ip = ([l for l in (
+            [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [
+                [(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in
+                 [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0])
+            conn = sqlite3.connect('meshage.db')
+            conn.execute('UPDATE users SET localIpAddress = "' + self.local_ip + '" WHERE userID = 0')
+            conn.commit()
+            conn.close()
+        except:
+            print "Error obtaining local ip address, you may not be connected to a network"
 
     def get_public_ip(self):
         try:
@@ -240,17 +245,33 @@ class I:
     def user_in_chat(address, chat):
         for user in chat.users:
             if user == address:
+                print address
                 return True
         return False
 
     def add_to_chat(self, address, name, ppl, uuid, users, banned_users):
         message = Message.Message()
-        self.sendto(message.encode(message.JOIN_CHAT_NAME, string=str([uuid, name])), ip=address)
-        self.sendto(message.encode(message.JOIN_CHAT_PPL, string=str([uuid, ppl])), ip=address)
-        self.sendto(message.encode(message.JOIN_CHAT_USERS, string=str([uuid, users])), ip=address)
-        self.sendto(message.encode(message.JOIN_CHAT_BANNED_USERS, string=str([uuid, banned_users])), ip=address)
+        self.uuid_to_chat(uuid).users.append(address)
+        if len(self.user_address_to_connection(address)) >= 7:
+            self.user_address_to_connection(address)[6] = uuid
+        else:
+            self.user_address_to_connection(address).append(uuid)
+        self.sendto(message.encode(message.JOIN_CHAT_NAME, string=str([uuid, name])), ip=address, encrypt=True)
+        self.sendto(message.encode(message.JOIN_CHAT_PPL, string=str([uuid, ppl])), ip=address, encrypt=True)
+        self.sendto(message.encode(message.JOIN_CHAT_USERS, string=str([uuid, users])), ip=address, encrypt=True)
+        self.sendto(message.encode(message.JOIN_CHAT_BANNED_USERS, string=str([uuid, banned_users])), ip=address, encrypt=True)
 
-    def construct_chat(self, uuid, **kwargs):
+    def uuid_to_chat(self, uuid):
+        for chat in self.chats:
+            if chat.uuid == uuid:
+                return chat
+        return False
+
+    def construct_chat(self, address, uuid, **kwargs):
+        name = None
+        ppl = None
+        users = None
+        banned = None
         for key, value in kwargs.iteritems():
             if key == 'name':
                 name = value
@@ -279,7 +300,6 @@ class I:
         else:
             I.constructing_chats.append([uuid, "", False, "", False, [], False, [], False])
             for chat in I.constructing_chats:
-                if uuid == chat[0]:
                     if name is not None:
                         chat[1] = name
                         chat[2] = True
@@ -293,8 +313,18 @@ class I:
                         chat[7] = banned
                         chat[8] = True
         for chat in I.constructing_chats:
+            print "\n"
+            print "\tname\t" + str(chat[2])
+            print "\tppl\t" + str(chat[4])
+            print "\tusers\t" + str(chat[6])
+            print "\tbanned\t" + str(chat[8])
+            print "\n"
             if chat[2] and chat[4] and chat[6] and chat[8]:
                 Chat.Chat.join_chat(chat[1], chat[3], chat[0], chat[5], chat[7], self.sql, self)
+                if len(self.user_address_to_connection(address)) >= 7:
+                    self.user_address_to_connection(address)[6] = uuid
+                else:
+                    self.user_address_to_connection(address).append(uuid)
 
     def user_rejoin_chat(self, address, uuid):
         for connection in self.connections:
@@ -305,7 +335,7 @@ class I:
     def clients_current_chat(self, address):
         for connection in self.connections:
             if connection[0] == address:
-                self.chat_uuid_to_id(connection[6])
+                return self.chat_uuid_to_id(connection[6])
 
     def chat_uuid_to_id(self, uuid):
         for chat in self.chats:
@@ -314,3 +344,11 @@ class I:
 
     def user_address_to_id(self, address):
         return self.sql.get_user_data(address)[0]
+
+    def user_address_to_connection(self, address):
+        for connection in self.connections:
+            if connection[0] == address:
+                return connection
+
+    def delete_chat(self, chat):
+        self.chats.remove(chat)

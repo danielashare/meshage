@@ -20,7 +20,7 @@ class Client:
         received = Message.Message()
         me = client
         if command == received.MESSAGE:
-            self.sql.add_message(me.clients_current_chat(self.address), me.user_address_to_id(self.address), string, "")
+            self.sql.add_message(me.clients_current_chat(self.address[0]), me.user_address_to_id(self.address[0]), string, "")
             print (self.username if self.username is not None else str(self.address[0])) + " sent: " + string
         elif command == received.PUBLIC_KEY:
             print time.time(), ": Received public key from ", self.address[0]
@@ -43,19 +43,44 @@ class Client:
             print time.time(), ": Received request for public key from ", self.address[0]
             me.send_public_key(ip=self.address[0])
         elif command == received.JOIN_CHAT_NAME:
-            details = str(string)[2:-2].split("', '")
-            me.construct_chat(details[0], name=details[1])
+            print time.time(), ": Received chat name from", self.address[0]
+            details = str(string).split("'")
+            details = [details[1], details[3]]
+            me.construct_chat(self.address[0], details[0], name=details[1])
         elif command == received.JOIN_CHAT_PPL:
-            details = str(string)[2:-2].split("', '")
-            me.construct_chat(details[0], ppl=details[1])
+            print time.time(), ": Received chat profile picture location from", self.address[0]
+            details = str(string).split("'")
+            details = [details[1], details[3]]
+            me.construct_chat(self.address[0], details[0], ppl=details[1])
         elif command == received.JOIN_CHAT_USERS:
-            details = [str(string)[2:].split("',")[0]]
-            details.append = str(string).split("', ['")[1][:-3].split("', '")
-            me.construct_chat(details[0], users=details[1])
+            print time.time(), ": Received chat users from", self.address[0]
+            print "\treceived string:\t" + str(string)
+            details = [str(string)[3:].split("',")[0]]
+            print "\tdissected string:\t" + str(str(string).split("', [")[1][:-2])
+            details.append(str(string).split("', [")[1][:-2])
+            if details[1].__contains__(","):
+                details[1] = details[1].split("'")
+                temporary_store = []
+                for detail in details[1]:
+                    try:
+                        if socket.inet_aton(detail):
+                            temporary_store.append(detail)
+                    except:
+                        pass
+                details[1] = temporary_store
+            else:
+                details[1] = [details[1]]
+                print "\tdoesn't contain ','\t" + str([details[1]])
+            me.construct_chat(self.address[0], details[0], users=details[1])
         elif command == received.JOIN_CHAT_BANNED_USERS:
-            details = [str(string)[2:].split("',")[0]]
-            details.append = str(string).split("', ['")[1][:-3].split("', '")
-            me.construct_chat(details[0], banned=details[1])
+            print time.time(), ": Received banned chat users from", self.address[0]
+            details = [str(string)[3:].split("',")[0]]
+            details.append(str(string).split("', [")[1][:-2])
+            if details[1].__contains__(","):
+                details[1] = details[1][2:-1].split("', u'")
+            else:
+                details[1] = [details[1]]
+            me.construct_chat(self.address[0], details[0], banned=details[1])
         elif command == received.CONNECT_CHAT:
             me.user_rejoin_chat(self.address[0], string)
         elif command == received.DISCONNECT:
@@ -74,19 +99,23 @@ class Client:
             received = Message.Message()
             try:
                 transmission = self.socket.recv(1024)
+                print "TRANSMISSION (length: " + str(len(transmission)) + ": \n" + str(transmission) + "\n"
                 if len(transmission) is not 0:
                     if self.has_public_key:
                         if len(transmission) > 256:
                             length_of_transmission = len(transmission)
                             number_of_messages = length_of_transmission / 256
-                            for x in range(1, number_of_messages):
+                            for x in range(1, number_of_messages + 1):
                                 command, string = received.decode(str(rsa.decrypt(transmission[(x-1) * 256:x*256]).decode()))
+                                print "\tACTUAL RECEIVE\t" + str(command) + str(string)
                                 self.run_command(command, string, client)
                         else:
                             command, string = received.decode(str(rsa.decrypt(transmission).decode()))
+                            print "\tACTUAL RECEIVE\t" + str(command) + str(string)
                             self.run_command(command, string, client)
                     else:
                         command, string = received.decode(str(transmission).decode())
+                        print "\tACTUAL RECEIVE\t" + str(command) + str(string)
                         self.run_command(command, string, client)
                 else:
                     pass

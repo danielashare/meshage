@@ -2,6 +2,7 @@ class Message:
     def __init__(self):
         self.MAX_SEND_LENGTH = 1024
         self.HEADER_LENGTH = 2
+        # CONVERT HEADER TO BINARY AND ADD A SYSTEM TO NUMBER MESSAGES, WILL BE USEFUL FOR EVERYTHING
         self.MESSAGE = "00"
         self.DISCONNECT = "01"
         self.OKAY = "02"
@@ -16,6 +17,7 @@ class Message:
         self.JOIN_CHAT_USERS = "11"
         self.JOIN_CHAT_BANNED_USERS = "12"
         self.CONNECT_CHAT = "13"
+        self.LEAVE_CHAT = "14"
 
     def encode(self, cmd, **kwargs):
         string = kwargs.get('string')

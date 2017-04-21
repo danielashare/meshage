@@ -1,5 +1,6 @@
 import sqlite3
 import uuid
+import time
 
 
 class SqlDatabase:
@@ -103,7 +104,7 @@ class SqlDatabase:
     @staticmethod
     def get_existing_chats():
         # Store chats for return
-        # [[chatID, chatName, profileLocation, uuid, bannedUsers, [users]]]
+        # [[chatID, chatName, profileLocation, uuid, [bannedUsers], [users]]]
         chats = []
         conn = sqlite3.connect('meshage.db', check_same_thread=False)
         cur = conn.cursor()
@@ -140,7 +141,7 @@ class SqlDatabase:
             cur.execute('SELECT userID FROM users WHERE publicIpAddress = "' + user + '"')
             user_ids = cur.fetchall()
             for row in user_ids:
-                cur.execute('INSERT INTO userToChat (userID, chatID) VALUES (' + row[0] + ', ' + rowid[0] + ')')
+                cur.execute('INSERT INTO userToChat (userID, chatID) VALUES (' + str(row[0]) + ', ' + str(rowid[0]) + ')')
         conn.commit()
         conn.close()
         return [rowid[0], str(chat_uuid)]
@@ -149,7 +150,7 @@ class SqlDatabase:
         conn = sqlite3.connect('meshage.db', check_same_thread=False)
         cur = conn.cursor()
         cur.execute('INSERT INTO chats (chatName, profileLocation, UUID) VALUES ("' + name + '", "' + ppl + '", "' + str(chat_uuid) + '")')
-        cur.execute('SELECT last_inserted_rowid()')
+        cur.execute('SELECT last_insert_rowid();')
         rowid = cur.fetchone()
         for user in users:
             cur.execute('SELECT userID FROM users WHERE publicIpAddress = "' + user + '"')
@@ -160,22 +161,37 @@ class SqlDatabase:
             cur.execute('SELECT userID FROM users WHERE publicIpAddress = "' + user + '"')
             data = cur.fetchall()
             for user_id in data:
-                cur.execute('INSERT INTO bannedUsers (userID, chatID) VALUES (' + user_id[0] + ', ' + rowid[0] + ')')
+                cur.execute('INSERT INTO bannedUsers (userID, chatID) VALUES (' + str(user_id[0]) + ', ' + str(rowid[0]) + ')')
         conn.commit()
         conn.close()
+        print "\t\trowid: " + str(rowid)
+        print "\t\trowid[0]: " + str(rowid[0])
         return rowid[0]
 
     def add_user_to_chat(self, user_address, chat_id):
         conn = sqlite3.connect('meshage.db', check_same_thread=False)
         cur = conn.cursor()
         data = self.get_user_data(user_address)
-        cur.execute('INSERT INTO userToChat (userID, chatID) VALUES (' + data[0] + ', ' + chat_id + ')')
+        cur.execute('INSERT INTO userToChat (userID, chatID) VALUES (' + str(data[0]) + ', ' + str(chat_id) + ')')
         conn.commit()
         conn.close()
 
     def add_message(self, chat_id, user_id, message, file_location):
         conn = sqlite3.connect('meshage.db', check_same_thread=False)
         cur = conn.cursor()
-        cur.execute('INSERT INTO messages (chatID, userID, dateSent, message, fileLocation) VALUES (' + chat_id + ', ' + user_id + ', "' + message + '", "' + file_location + '")')
+        print "\tchat_id:\t" + str(chat_id)
+        print "\tuser_id:\t" + str(user_id)
+        print "\tmessage:\t" + message
+        print "\tfile_location:\t" + file_location
+        cur.execute('INSERT INTO messages (chatID, userID, dateSent, message, fileLocation) VALUES (' + str(chat_id) + ', ' + str(user_id) + ', "' + str(time.time()) + '", "' + str(message) + '", "' + str(file_location) + '")')
+        conn.commit()
+        conn.close()
+
+    def remove_chat(self, chat_id):
+        conn = sqlite3.connect('meshage.db', check_same_thread=False)
+        cur = conn.cursor()
+        cur.execute('DELETE FROM userToChat WHERE chatID = ' + str(chat_id))
+        cur.execute('DELETE FROM bannedUsers WHERE chatID = ' + str(chat_id))
+        cur.execute('DELETE FROM chats WHERE chatID = ' + str(chat_id))
         conn.commit()
         conn.close()
