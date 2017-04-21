@@ -2,7 +2,6 @@ import socket
 import time
 
 import Message
-import RsaEncryption
 
 
 class Client:
@@ -83,6 +82,10 @@ class Client:
             me.construct_chat(self.address[0], details[0], banned=details[1])
         elif command == received.CONNECT_CHAT:
             me.user_rejoin_chat(self.address[0], string)
+        elif command == received.FILE:
+            me.construct_file(self.address[0], string)
+        elif command == received.FILE_NAME:
+            me.construct_file(self.address[0], string)
         elif command == received.DISCONNECT:
             print time.time(), ": Received disconnect from ", self.address[0]
             me.remove_by_address(self.address[0])

@@ -70,6 +70,8 @@ while 1:
             elif text.split(' ')[0] == '/exitchat':
                 currentChat.exit_chat(me, messages, sql)
                 currentChat = None
+            elif text.split(' ')[0] == '/file':
+                me.sendfile(text.split(' ')[1], currentChat)
         else:
             if currentChat is not None:
                 me.send(messages.encode(messages.MESSAGE, string=text[:212]), currentChat, encrypt=True)

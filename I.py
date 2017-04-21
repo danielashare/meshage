@@ -13,6 +13,8 @@ class I:
     connections = []
     # [[uuid, name, set?, ppl, set?, users, set?, banned, set?]]
     constructing_chats = []
+    # [[address, file_name, set?, file_data, set?]]
+    constructing_files = []
 
     def __init__(self, sql, port):
         self.username = ""
@@ -50,9 +52,14 @@ class I:
 
     def send(self, string, chat, **kwargs):
         encrypt = True
+        file_location = None
+        file_data = None
         for key, value in kwargs.iteritems():
             if key == "encrypt":
                 encrypt = value
+            if key == "file":
+                file_location = string
+                file_data = open(file_location, "rb").read()
         for connection in self.connections:
             if self.user_in_chat(connection[0], chat):
                 connection[2].sendall(self.rsa.encrypt(connection[3], string) if encrypt else string)
@@ -79,6 +86,18 @@ class I:
                     connection[2].sendall(self.rsa.encrypt(connection[3], string) if encrypt else string)
                     return
 
+    def sendfile(self, file_location, chat):
+        messages = Message.Message()
+        file_location = file_location
+        file_object = open(file_location, "rb")
+        file_name = file_object.name
+        file_data = file_object.read()
+        if len(file_data) > 212:
+            print "File too large"
+            return
+        self.send(messages.encode(messages.FILE_NAME, string=file_name), chat, encrypt=True)
+        self.send(messages.encode(messages.FILE, string=file_data), chat, encrypt=True)
+
     def add_connection(self, host, port):
         if not self.check_existing_connection(ip=host):
             try:
@@ -97,7 +116,7 @@ class I:
     def close_all(self):
         for connection in self.connections:
             messages = Message.Message()
-            self.send(messages.encode(messages.DISCONNECT), encrypt=True)
+            self.sendto(messages.encode(messages.DISCONNECT), ip=connection[0], encrypt=True)
             connection[2].shutdown(socket.SHUT_WR)
             connection[2].close()
             self.connections.remove(connection)
@@ -325,6 +344,40 @@ class I:
                     self.user_address_to_connection(address)[6] = uuid
                 else:
                     self.user_address_to_connection(address).append(uuid)
+                I.constructing_chats.remove(chat)
+
+    def construct_file(self, address, **kwargs):
+        name = None
+        data = None
+        found = False
+        for key, value in kwargs.iteritems():
+            if key == "name":
+                name = value
+            elif key == "data":
+                data = value
+        for file in self.constructing_files:
+            if address == file[0]:
+                found = True
+                if name is not None:
+                    file[1] = name
+                    file[2] = True
+                if data is not None:
+                    file[3] = data
+                    file[4] = True
+        if not found:
+            self.constructing_files.append([address, "", False, "", False])
+            if name is not None:
+                self.constructing_files[len(self.constructing_files) - 1][1] = name
+                self.constructing_files[len(self.constructing_files) - 1][2] = True
+            if data is not None:
+                self.constructing_files[len(self.constructing_files) - 1][3] = data
+                self.constructing_files[len(self.constructing_files) - 1][4] = True
+        for file in self.constructing_files:
+            if file[2] and file[4]:
+                write_file = open(file[1], "w")
+                write_file.write(file[3])
+                write_file.close()
+                self.constructing_files.remove(file)
 
     def user_rejoin_chat(self, address, uuid):
         for connection in self.connections:
