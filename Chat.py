@@ -19,7 +19,7 @@ class Chat:
             self.users.append(address)
             self.sql.add_user_to_chat(address, self.chat_id)
         self.me.add_to_chat(address, self.chat_name, self.profile_picture_location, self.uuid, self.users, self.banned)
-        self.get_connected_users_current_chat()
+        self.me.get_connected_users_current_chat()
 
     def exit_chat(self, me, message, sql):
         me.send(message.encode(message.LEAVE_CHAT), self, encrypt=True)
