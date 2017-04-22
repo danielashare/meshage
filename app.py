@@ -75,5 +75,6 @@ while 1:
         else:
             if currentChat is not None:
                 me.send(messages.encode(messages.MESSAGE, string=text[:212]), currentChat, encrypt=True)
+                sql.add_message(me.chat_uuid_to_id(currentChat.uuid), 0, text[:212], "")
             else:
                 print "You're not in a chat"

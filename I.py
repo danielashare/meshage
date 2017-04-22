@@ -389,7 +389,6 @@ class I:
                 else:
                     self.get_connected_users_current_chat(ip=address)
 
-
     def chat_uuid_to_id(self, uuid):
         for chat in self.chats:
             if chat.uuid == uuid:
@@ -437,3 +436,11 @@ class I:
                 else:
                     connection.append(uuid)
                 return
+
+    def get_users_chat_uuid(self, address):
+        for connection in self.connections:
+            if connection[0] == address:
+                if len(connection) >= 7:
+                    return connection[6]
+                else:
+                    return False
