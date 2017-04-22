@@ -645,13 +645,13 @@ class I:
                 response = raw_input("\nThere's a vote to unban " + (self.address_to_name(address) if self.address_to_name(address) else address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
 
     def count_kick(self, uuid, address, decision):
-        print "received decision from " + address
+        print "received decision"
         for vote in self.votes:
             if vote[0] == uuid and vote[1] == address:
-                if decision:
+                if decision == 1:
                     print "they voted yes"
                     vote[4] = vote[4] + 1
-                else:
+                elif decision == 0:
                     print "they voted no"
                     vote[5] = vote[5] + 1
             if vote[4] + vote[5] == vote[3]:
