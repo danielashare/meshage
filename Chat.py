@@ -39,13 +39,14 @@ class Chat:
             if user != self.me.local_ip or user != self.me.public_ip:
                 if not self.me.check_existing_connection(ip=user):
                     self.me.add_connection(user, self.me.port)
+                    print user + " joined " + self.chat_name
                     self.users.append(user)
 
     def update_banned(self, banned):
         self.banned = banned
 
     @staticmethod
-    def join_chat(name, ppl, uuid, users, banned_users, sql, me):
+    def join_chat(name, ppl, uuid, users, banned_users, sql, me, invitee_address):
         users_list = users
         for user in users_list:
             if user == me.local_ip or user == me.public_ip:
@@ -62,6 +63,7 @@ class Chat:
             users.append(me.local_ip)
         me.chats.append(Chat(sql.add_existing_chat(name, ppl, uuid, users, banned_users), name, ppl, uuid, sql, me, users=users, banned=banned_users))
         me.get_connected_users_current_chat()
+        print "You've been added to " + name + " by " + me.address_to_name(invitee_address)
 
     @staticmethod
     def load_existing_chats(sql, me):

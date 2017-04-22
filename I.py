@@ -325,7 +325,7 @@ class I:
                             chat[8] = True
             for chat in I.constructing_chats:
                 if chat[2] and chat[4] and chat[6] and chat[8]:
-                    Chat.Chat.join_chat(chat[1], chat[3], chat[0], chat[5], chat[7], self.sql, self)
+                    Chat.Chat.join_chat(chat[1], chat[3], chat[0], chat[5], chat[7], self.sql, self, address)
                     if len(self.user_address_to_connection(address)) >= 7:
                         self.user_address_to_connection(address)[6] = uuid
                     else:
@@ -461,3 +461,8 @@ class I:
     def update_chat_users(self, address, users, uuid):
         messages = Message.Message()
         self.sendto(messages.encode(messages.JOIN_CHAT_USERS, string=str([uuid, users])), ip=address, encrypt=True)
+
+    def address_to_name(self, address):
+        for connection in self.connections:
+            if connection[0] == address:
+                return connection[4]
