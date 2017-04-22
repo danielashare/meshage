@@ -425,7 +425,9 @@ class I:
         self.sendto(messages.encode(messages.CURRENT_CHAT, string=(str(self.currentChat.uuid) if self.currentChat is not None else "None")), encrypt=True, ip=address)
 
     def set_current_chat(self, chat):
-        self.currentChat = chat
+        for chats in self.chats:
+            if chat == chats.uuid:
+                self.currentChat = chats
 
     def set_remote_user_chat(self, address, uuid):
         for connection in self.connections:
