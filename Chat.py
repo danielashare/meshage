@@ -22,7 +22,7 @@ class Chat:
         self.me.get_connected_users_current_chat()
         for user in self.users:
             if user is not self.me.local_ip or user is not address:
-                self.me.update_chat_users(user, self.users)
+                self.me.update_chat_users(user, self.users, self.uuid)
 
     def exit_chat(self, me, message, sql):
         me.send(message.encode(message.LEAVE_CHAT), self, encrypt=True)
