@@ -11,7 +11,6 @@ class Server:
         while 1:
             client_socket, address = self.server_socket.accept()
             thread.start_new_thread(Client.Client, (client_socket, address, client, sql))
-            print str(address[0]) + " connected"
             me = client
             found = False
             for connection in me.connections:

@@ -179,10 +179,6 @@ class SqlDatabase:
     def add_message(self, chat_id, user_id, message, file_location):
         conn = sqlite3.connect('meshage.db', check_same_thread=False)
         cur = conn.cursor()
-        print "\tchat_id:\t" + str(chat_id)
-        print "\tuser_id:\t" + str(user_id)
-        print "\tmessage:\t" + message
-        print "\tfile_location:\t" + file_location
         cur.execute('INSERT INTO messages (chatID, userID, dateSent, message, fileLocation) VALUES (' + str(chat_id) + ', ' + str(user_id) + ', "' + str(time.time()) + '", "' + str(message) + '", "' + str(file_location) + '")')
         conn.commit()
         conn.close()

@@ -110,7 +110,7 @@ class I:
                 print "Host could not be found, make sure the IP address you entered is correct and that the host's Server is running."
                 return False
         else:
-            print time.time(), ": Connection to ", host, " already exists"
+            print time.time(), ": Connection to", host, "already exists"
         return True
 
     def close_all(self):
@@ -182,11 +182,15 @@ class I:
                 print time.time(), ": Sent username to ", value
                 self.sendto(messages.encode(messages.PROFILE_PICTURE, string=str(self.profile_picture_location)), ip=value, encrypt=True)
                 print time.time(), ": Sent profile picture location (", str(self.profile_picture_location), ") to ", value
+                self.sendto(messages.encode(messages.CURRENT_CHAT, string=str(self.currentChat.uuid)), ip=value, encrypt=True)
+                print time.time(), ": Sent chat uuid (", str(self.currentChat.uuid), ") to ", value
             elif key == "socket":
                 self.sendto(messages.encode(messages.USERNAME, string=self.username), socket=value, encrypt=True)
                 print time.time(), ": Sent username to ", value
                 self.sendto(messages.encode(messages.PROFILE_PICTURE, string=self.profile_picture_location), socket=value, encrypt=True)
                 print time.time(), ": Sent profile picture location to ", value
+                self.sendto(messages.encode(messages.CURRENT_CHAT, string=str(self.currentChat.uuid)), socket=value, encrypt=True)
+                print time.time(), ": Sent chat uuid (", str(self.currentChat.uuid), ") to ", value
 
     def send_public_key(self, **kwargs):
         messages = Message.Message()
@@ -380,7 +384,11 @@ class I:
     def clients_current_chat(self, address):
         for connection in self.connections:
             if connection[0] == address:
-                return self.chat_uuid_to_id(connection[6])
+                if len(connection) >= 7:
+                    return self.chat_uuid_to_id(connection[6])
+                else:
+                    self.get_connected_users_current_chat(ip=address)
+
 
     def chat_uuid_to_id(self, uuid):
         for chat in self.chats:
@@ -398,10 +406,19 @@ class I:
     def delete_chat(self, chat):
         self.chats.remove(chat)
 
-    def get_connected_users_current_chat(self):
+    def get_connected_users_current_chat(self, **kwargs):
+        ip = None
+        for key, value in kwargs.iteritems():
+            if key == ip:
+                ip = value
         messages = Message.Message()
         for connection in self.connections:
-            self.sendto(messages.encode(messages.REQUEST_CURRENT_CHAT), encrypt=True, ip=connection[0])
+            if ip is not None:
+                if ip == connection[0]:
+                    self.sendto(messages.encode(messages.REQUEST_CURRENT_CHAT), encrypt=True, ip=connection[0])
+                    return
+            else:
+                self.sendto(messages.encode(messages.REQUEST_CURRENT_CHAT), encrypt=True, ip=connection[0])
 
     def send_current_chat(self, address):
         messages = Message.Message()
