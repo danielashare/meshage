@@ -55,7 +55,7 @@ class I:
             self.rsa = RsaEncryption.RsaEncryption(generate=False)
 
     def send(self, string, chat, **kwargs):
-        if not self.is_muted_chat(chat.uuid) and (string.startswith("00") or string.startswith("15") or string.startswith("16")):
+        if not self.is_muted_chat(chat.uuid) and not (string.startswith("00") or string.startswith("15") or string.startswith("16")):
             encrypt = True
             file_location = None
             file_data = None
