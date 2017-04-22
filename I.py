@@ -422,7 +422,7 @@ class I:
 
     def send_current_chat(self, address):
         messages = Message.Message()
-        self.sendto(messages.encode(messages.CURRENT_CHAT, string=str(self.currentChat.uuid)), encrypt=True, ip=address)
+        self.sendto(messages.encode(messages.CURRENT_CHAT, string=(str(self.currentChat.uuid) if self.currentChat is not None else "None")), encrypt=True, ip=address)
 
     def set_current_chat(self, chat):
         self.currentChat = chat
