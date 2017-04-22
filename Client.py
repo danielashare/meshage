@@ -87,6 +87,7 @@ class Client:
                 details[1] = [details[1]]
             me.construct_chat(self.address[0], details[0], banned=details[1])
         elif command == received.CONNECT_CHAT:
+            print str(self.address[0]) + " connected to " + string
             me.user_rejoin_chat(self.address[0], string)
         elif command == received.FILE:
             me.construct_file(self.address[0], string)
@@ -95,6 +96,7 @@ class Client:
         elif command == received.REQUEST_CURRENT_CHAT:
             me.send_current_chat(self.address[0])
         elif command == received.CURRENT_CHAT:
+            print str(self.address[0]) + "'s current chat is " + string
             me.set_remote_user_chat(self.address[0], string)
         elif command == received.DISCONNECT:
             print time.time(), ": Received disconnect from ", self.address[0]

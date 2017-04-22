@@ -183,6 +183,7 @@ class I:
                 self.sendto(messages.encode(messages.PROFILE_PICTURE, string=str(self.profile_picture_location)), ip=value, encrypt=True)
                 print time.time(), ": Sent profile picture location (", str(self.profile_picture_location), ") to ", value
                 self.sendto(messages.encode(messages.CURRENT_CHAT, string=(str(self.currentChat.uuid) if self.currentChat is not None else "None")), ip=value, encrypt=True)
+                print self.currentChat
                 print time.time(), ": Sent chat uuid (", (str(self.currentChat.uuid) if self.currentChat is not None else "None"), ") to ", value
             elif key == "socket":
                 self.sendto(messages.encode(messages.USERNAME, string=self.username), socket=value, encrypt=True)
@@ -262,7 +263,7 @@ class I:
             if chat.chat_name == chat_name:
                 self.currentChat = chat
                 for connection in self.connections:
-                    self.sendto(messages.encode(messages.CONNECT_CHAT, chat.uuid), ip=connection[0], encrypt=True)
+                    self.sendto(messages.encode(messages.CONNECT_CHAT, string=chat.uuid), ip=connection[0], encrypt=True)
                 return chat
         return None
 
