@@ -29,7 +29,8 @@ class Chat:
     @staticmethod
     def join_chat(name, ppl, uuid, users, banned_users, sql, me):
         for user in users:
-            me.add_connection(user, me.port)
+            if user is not me.local_ip or user is not me.public_ip:
+                me.add_connection(user, me.port)
         me.chats.append(Chat(sql.add_existing_chat(name, ppl, uuid, users, banned_users), name, ppl, uuid, sql, me, users=users, banned=banned_users))
         me.set_current_chat(uuid)
         me.get_connected_users_current_chat()
