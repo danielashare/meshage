@@ -20,7 +20,7 @@ class Client:
         me = client
         if command == received.MESSAGE:
             self.sql.add_message(me.clients_current_chat(self.address[0]), me.user_address_to_id(self.address[0]), string, "")
-            if self.me.get_users_chat_uuid(self.address[0]):
+            if self.me.is_user_and_client_in_same_chat(self.address[0]):
                 print (self.username if self.username is not None else str(self.address[0])) + " sent: " + string
         elif command == received.PUBLIC_KEY:
             print time.time(), ": Received public key from ", self.address[0]

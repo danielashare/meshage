@@ -448,3 +448,10 @@ class I:
                     return connection[6]
                 else:
                     return False
+
+    def is_user_and_client_in_same_chat(self, address):
+        client_uuid = self.get_users_chat_uuid(address)
+        if self.currentChat.uuid == client_uuid:
+            return True
+        else:
+            return False
