@@ -352,6 +352,7 @@ class I:
                 self.uuid_to_chat(uuid).profile_picture_location = ppl
             if users is not None:
                 self.uuid_to_chat(uuid).update_users(users)
+                print "Received update to users from " + address + " (" + str(users) + ")"
             if banned is not None:
                 self.uuid_to_chat(uuid).update_banned(banned)
 
