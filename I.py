@@ -99,7 +99,7 @@ class I:
         self.send(messages.encode(messages.FILE, string=file_data), chat, encrypt=True)
 
     def add_connection(self, host, port):
-        if not self.check_existing_connection(ip=host):
+        if not self.check_existing_connection(ip=host) or host is not self.local_ip or host is not self.public_ip:
             try:
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 s.connect((host, port))
@@ -410,6 +410,7 @@ class I:
     def get_connected_users_current_chat(self):
         messages = Message.Message()
         for connection in self.connections:
+            print connection[0]
             self.sendto(messages.encode(messages.REQUEST_CURRENT_CHAT), encrypt=True, ip=connection[0])
 
     def send_current_chat(self, address):
