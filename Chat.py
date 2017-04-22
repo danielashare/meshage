@@ -34,7 +34,8 @@ class Chat:
                 users_list.remove(user)
         for user in users_list:
             if user != me.local_ip or user != me.public_ip:
-                me.add_connection(user, me.port)
+                if not me.check_existing_connection(ip=user):
+                    me.add_connection(user, me.port)
         me.chats.append(Chat(sql.add_existing_chat(name, ppl, uuid, users, banned_users), name, ppl, uuid, sql, me, users=users, banned=banned_users))
         me.set_current_chat(uuid)
         me.get_connected_users_current_chat()

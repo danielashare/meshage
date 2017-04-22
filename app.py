@@ -71,7 +71,7 @@ while 1:
                 currentChat.exit_chat(me, messages, sql)
                 currentChat = None
             elif text.split(' ')[0] == '/file':
-                me.sendfile(text.split(' ')[1], currentChat)
+                me.send_file(text.split(' ')[1], currentChat)
         else:
             if currentChat is not None:
                 me.send(messages.encode(messages.MESSAGE, string=text[:212]), currentChat, encrypt=True)

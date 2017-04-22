@@ -86,7 +86,7 @@ class I:
                     connection[2].sendall(self.rsa.encrypt(connection[3], string) if encrypt else string)
                     return
 
-    def sendfile(self, file_location, chat):
+    def send_file(self, file_location, chat):
         messages = Message.Message()
         file_location = file_location
         file_object = open(file_location, "rb")
@@ -99,7 +99,7 @@ class I:
         self.send(messages.encode(messages.FILE, string=file_data), chat, encrypt=True)
 
     def add_connection(self, host, port):
-        if not self.check_existing_connection(ip=host) or host is not self.local_ip or host is not self.public_ip:
+        if not self.check_existing_connection(ip=host):
             try:
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 s.connect((host, port))
@@ -389,6 +389,9 @@ class I:
     def clients_current_chat(self, address):
         for connection in self.connections:
             if connection[0] == address:
+                print len(connection)
+                print connection
+                print connection[6]
                 return self.chat_uuid_to_id(connection[6])
 
     def chat_uuid_to_id(self, uuid):
@@ -415,7 +418,7 @@ class I:
 
     def send_current_chat(self, address):
         messages = Message.Message()
-        self.sendto(messages.encode(messages.CURRENT_CHAT, string=self.currentChat.uuid), encrypt=True, ip=address)
+        self.sendto(messages.encode(messages.CURRENT_CHAT, string=str(self.currentChat.uuid)), encrypt=True, ip=address)
 
     def set_current_chat(self, chat):
         self.currentChat = chat
