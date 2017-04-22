@@ -534,6 +534,7 @@ class I:
         for connection in self.connections:
             if connection[0] == address:
                 return connection[4]
+        return False
 
     def name_to_address(self, name):
         for connection in self.connections:
@@ -573,7 +574,7 @@ class I:
     def respond_to_kick(self, uuid, address):
         messages = Message.Message()
         not_correct_response = True
-        response = raw_input("\nThere's a vote to kick " + self.address_to_name(address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
+        response = raw_input("\nThere's a vote to kick " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
         while not_correct_response:
             if response == 'y':
                 self.send(messages.encode(messages.RESPOND_KICK, string=str([uuid, address, "1"])), self.uuid_to_chat(uuid), encrypt=True)
@@ -582,12 +583,12 @@ class I:
                 self.send(messages.encode(messages.RESPOND_KICK, string=str([uuid, address, "0"])), self.uuid_to_chat(uuid), encrypt=True)
                 not_correct_response = False
             else:
-                response = raw_input("\nThere's a vote to kick " + self.address_to_name(address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
+                response = raw_input("\nThere's a vote to kick " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
 
     def respond_to_ban(self, uuid, address):
         messages = Message.Message()
         not_correct_response = True
-        response = raw_input("\nThere's a vote to ban " + self.address_to_name(address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
+        response = raw_input("\nThere's a vote to ban " + self.(self.address_to_name(address) if not self.address_to_name(address) else address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
         while not_correct_response:
             if response == 'y':
                 self.send(messages.encode(messages.RESPOND_BAN, string=str([uuid, address, "1"])), self.uuid_to_chat(uuid), encrypt=True)
@@ -596,12 +597,12 @@ class I:
                 self.send(messages.encode(messages.RESPOND_BAN, string=str([uuid, address, "0"])), self.uuid_to_chat(uuid), encrypt=True)
                 not_correct_response = False
             else:
-                response = raw_input("\nThere's a vote to ban " + self.address_to_name(address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
+                response = raw_input("\nThere's a vote to ban " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
 
     def respond_to_mute(self, uuid, address):
         messages = Message.Message()
         not_correct_response = True
-        response = raw_input("\nThere's a vote to mute " + self.address_to_name(address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
+        response = raw_input("\nThere's a vote to mute " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
         while not_correct_response:
             if response == 'y':
                 self.send(messages.encode(messages.RESPOND_MUTE, string=str([uuid, address, "1"])), self.uuid_to_chat(uuid), encrypt=True)
@@ -610,12 +611,12 @@ class I:
                 self.send(messages.encode(messages.RESPOND_MUTE, string=str([uuid, address, "0"])), self.uuid_to_chat(uuid), encrypt=True)
                 not_correct_response = False
             else:
-                response = raw_input("\nThere's a vote to mute " + self.address_to_name(address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
+                response = raw_input("\nThere's a vote to mute " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
 
     def respond_to_unmute(self, uuid, address):
         messages = Message.Message()
         not_correct_response = True
-        response = raw_input("\nThere's a vote to unmute " + self.address_to_name(address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
+        response = raw_input("\nThere's a vote to unmute " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
         while not_correct_response:
             if response == 'y':
                 self.send(messages.encode(messages.RESPOND_UNMUTE, string=str([uuid, address, "1"])), self.uuid_to_chat(uuid), encrypt=True)
@@ -624,12 +625,12 @@ class I:
                 self.send(messages.encode(messages.RESPOND_UNMUTE, string=str([uuid, address, "0"])), self.uuid_to_chat(uuid), encrypt=True)
                 not_correct_response = False
             else:
-                response = raw_input("\nThere's a vote to unmute " + self.address_to_name(address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
+                response = raw_input("\nThere's a vote to unmute " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
 
     def respond_to_unban(self, uuid, address):
         messages = Message.Message()
         not_correct_response = True
-        response = raw_input("\nThere's a vote to unban " + self.address_to_name(address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
+        response = raw_input("\nThere's a vote to unban " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
         while not_correct_response:
             if response == 'y':
                 self.send(messages.encode(messages.RESPOND_UNBAN, string=str([uuid, address, "1"])), self.uuid_to_chat(uuid), encrypt=True)
@@ -638,7 +639,7 @@ class I:
                 self.send(messages.encode(messages.RESPOND_UNBAN, string=str([uuid, address, "0"])), self.uuid_to_chat(uuid), encrypt=True)
                 not_correct_response = False
             else:
-                response = raw_input("\nThere's a vote to unban " + self.address_to_name(address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
+                response = raw_input("\nThere's a vote to unban " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
 
     def count_kick(self, uuid, address, decision):
         for vote in self.votes:
@@ -653,9 +654,9 @@ class I:
                 against_percent = (100 / vote[3]) * vote[5]
                 if for_percent > against_percent:
                     self.sendto(messages.encode(messages.KICK, string=uuid), ip=address, encrypt=True)
-                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + self.address_to_name(address) + " was kicked."), self.uuid_to_chat(uuid), encrypt=True)
+                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " was kicked."), self.uuid_to_chat(uuid), encrypt=True)
                 elif for_percent <= against_percent:
-                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + self.address_to_name(address) + " was not kicked."), self.uuid_to_chat(uuid), encrypt=True)
+                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " was not kicked."), self.uuid_to_chat(uuid), encrypt=True)
 
     def count_ban(self, uuid, address, decision):
         for vote in self.votes:
@@ -670,9 +671,9 @@ class I:
                 against_percent = (100 / vote[3]) * vote[5]
                 if for_percent > against_percent:
                     self.send(messages.encode(messages.BAN, string=str([uuid, address])), self.uuid_to_chat(uuid), encrypt=True)
-                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + self.address_to_name(address) + " was banned."), self.uuid_to_chat(uuid), encrypt=True)
+                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " was banned."), self.uuid_to_chat(uuid), encrypt=True)
                 elif for_percent <= against_percent:
-                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + self.address_to_name(address) + " was not banned."), self.uuid_to_chat(uuid), encrypt=True)
+                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " was not banned."), self.uuid_to_chat(uuid), encrypt=True)
 
     def count_mute(self, uuid, address, decision):
         for vote in self.votes:
@@ -687,9 +688,9 @@ class I:
                 against_percent = (100 / vote[3]) * vote[5]
                 if for_percent > against_percent:
                     self.sendto(messages.encode(messages.MUTE, string=uuid), ip=address, encrypt=True)
-                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + self.address_to_name(address) + " was muted."), self.uuid_to_chat(uuid), encrypt=True)
+                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " was muted."), self.uuid_to_chat(uuid), encrypt=True)
                 elif for_percent <= against_percent:
-                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + self.address_to_name(address) + " was not muted."), self.uuid_to_chat(uuid), encrypt=True)
+                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " was not muted."), self.uuid_to_chat(uuid), encrypt=True)
 
     def count_unmute(self, uuid, address, decision):
         for vote in self.votes:
@@ -704,9 +705,9 @@ class I:
                 against_percent = (100 / vote[3]) * vote[5]
                 if for_percent > against_percent:
                     self.sendto(messages.encode(messages.UNMUTE, string=uuid), ip=address, encrypt=True)
-                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + self.address_to_name(address) + " was unmuted."), self.uuid_to_chat(uuid), encrypt=True)
+                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " was unmuted."), self.uuid_to_chat(uuid), encrypt=True)
                 elif for_percent <= against_percent:
-                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + self.address_to_name(address) + " was not unmuted."), self.uuid_to_chat(uuid), encrypt=True)
+                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " was not unmuted."), self.uuid_to_chat(uuid), encrypt=True)
 
     def count_unban(self, uuid, address, decision):
         for vote in self.votes:
@@ -721,9 +722,9 @@ class I:
                 against_percent = (100 / vote[3]) * vote[5]
                 if for_percent > against_percent:
                     self.send(messages.encode(messages.UNBAN, string=str([uuid, address])), self.uuid_to_chat(uuid), encrypt=True)
-                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + self.address_to_name(address) + " was unbanned."), self.uuid_to_chat(uuid), encrypt=True)
+                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " was unbanned."), self.uuid_to_chat(uuid), encrypt=True)
                 elif for_percent <= against_percent:
-                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + self.address_to_name(address) + " was not unbanned."), self.uuid_to_chat(uuid), encrypt=True)
+                    self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " was not unbanned."), self.uuid_to_chat(uuid), encrypt=True)
 
     def kick(self, uuid):
         print "You have been kicked from " + self.uuid_to_chat(uuid).chat_name
