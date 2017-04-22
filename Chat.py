@@ -20,12 +20,28 @@ class Chat:
             self.sql.add_user_to_chat(address, self.chat_id)
         self.me.add_to_chat(address, self.chat_name, self.profile_picture_location, self.uuid, self.users, self.banned)
         self.me.get_connected_users_current_chat()
+        for user in self.users:
+            if user is not self.me.local_ip or user is not address:
+                self.me.update_chat_users(user, self.users)
 
     def exit_chat(self, me, message, sql):
         me.send(message.encode(message.LEAVE_CHAT), self, encrypt=True)
         sql.remove_chat(self.chat_id)
         me.delete_chat(self)
         me.set_current_chat(None)
+        
+    def update_users(self, users):
+        users_list = users
+        for user in users_list:
+            if user == self.me.local_ip or user == self.me.public_ip:
+                users_list.remove(user)
+        for user in users_list:
+            if user != self.me.local_ip or user != self.me.public_ip:
+                if not self.me.check_existing_connection(ip=user):
+                    self.me.add_connection(user, self.me.port)
+
+    def update_banned(self, banned):
+        self.banned = banned
 
     @staticmethod
     def join_chat(name, ppl, uuid, users, banned_users, sql, me):

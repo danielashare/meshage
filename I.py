@@ -306,45 +306,54 @@ class I:
                 users = value
             elif key == 'banned':
                 banned = value
-
-        if len(I.constructing_chats) is not 0:
+        if not self.does_chat_exist(uuid):
+            if len(I.constructing_chats) is not 0:
+                for chat in I.constructing_chats:
+                    if uuid == chat[0]:
+                        if name is not None:
+                            chat[1] = name
+                            chat[2] = True
+                        if ppl is not None:
+                            chat[3] = ppl
+                            chat[4] = True
+                        if users is not None:
+                            chat[5] = users
+                            chat[6] = True
+                        if banned is not None:
+                            chat[7] = banned
+                            chat[8] = True
+            else:
+                I.constructing_chats.append([uuid, "", False, "", False, [], False, [], False])
+                for chat in I.constructing_chats:
+                        if name is not None:
+                            chat[1] = name
+                            chat[2] = True
+                        if ppl is not None:
+                            chat[3] = ppl
+                            chat[4] = True
+                        if users is not None:
+                            chat[5] = users
+                            chat[6] = True
+                        if banned is not None:
+                            chat[7] = banned
+                            chat[8] = True
             for chat in I.constructing_chats:
-                if uuid == chat[0]:
-                    if name is not None:
-                        chat[1] = name
-                        chat[2] = True
-                    if ppl is not None:
-                        chat[3] = ppl
-                        chat[4] = True
-                    if users is not None:
-                        chat[5] = users
-                        chat[6] = True
-                    if banned is not None:
-                        chat[7] = banned
-                        chat[8] = True
+                if chat[2] and chat[4] and chat[6] and chat[8]:
+                    Chat.Chat.join_chat(chat[1], chat[3], chat[0], chat[5], chat[7], self.sql, self)
+                    if len(self.user_address_to_connection(address)) >= 7:
+                        self.user_address_to_connection(address)[6] = uuid
+                    else:
+                        self.user_address_to_connection(address).append(uuid)
+                    I.constructing_chats.remove(chat)
         else:
-            I.constructing_chats.append([uuid, "", False, "", False, [], False, [], False])
-            for chat in I.constructing_chats:
-                    if name is not None:
-                        chat[1] = name
-                        chat[2] = True
-                    if ppl is not None:
-                        chat[3] = ppl
-                        chat[4] = True
-                    if users is not None:
-                        chat[5] = users
-                        chat[6] = True
-                    if banned is not None:
-                        chat[7] = banned
-                        chat[8] = True
-        for chat in I.constructing_chats:
-            if chat[2] and chat[4] and chat[6] and chat[8]:
-                Chat.Chat.join_chat(chat[1], chat[3], chat[0], chat[5], chat[7], self.sql, self)
-                if len(self.user_address_to_connection(address)) >= 7:
-                    self.user_address_to_connection(address)[6] = uuid
-                else:
-                    self.user_address_to_connection(address).append(uuid)
-                I.constructing_chats.remove(chat)
+            if name is not None:
+                self.uuid_to_chat(uuid).chat_name = name
+            if ppl is not None:
+                self.uuid_to_chat(uuid).profile_picture_location = ppl
+            if users is not None:
+                self.uuid_to_chat(uuid).update_users(users)
+            if banned is not None:
+                self.uuid_to_chat(uuid).update_banned(banned)
 
     def construct_file(self, address, **kwargs):
         name = None
@@ -451,8 +460,18 @@ class I:
 
     def is_user_and_client_in_same_chat(self, address):
         client_uuid = self.get_users_chat_uuid(address)
-        current_chat_uuid_or_None = (str(self.currentChat.uuid) if self.currentChat is not None else "None")
-        if current_chat_uuid_or_None == client_uuid:
+        current_chat_uuid_or_none = (str(self.currentChat.uuid) if self.currentChat is not None else "None")
+        if current_chat_uuid_or_none == client_uuid:
             return True
         else:
             return False
+
+    def does_chat_exist(self, uuid):
+        for chat in self.chats:
+            if uuid == chat.uuid:
+                return True
+        return False
+
+    def update_chat_users(self, address, users):
+        messages = Message.Message()
+        self.sendto(messages.encode(messages.JOIN_CHAT_USERS, string=users), ip=address, encrypt=True)
