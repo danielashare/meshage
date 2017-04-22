@@ -132,9 +132,7 @@ class I:
                 self.connections.remove(connection)
 
     def remove_by_address(self, address):
-        print "Address to remove: " + str(address)
         for connection in self.connections:
-            print "Checking against: " + str(connection[0])
             if connection[0] == address:
                 print str(connection[0]) + " disconnected"
                 self.connections.remove(connection)
@@ -265,7 +263,6 @@ class I:
     def user_in_chat(address, chat):
         for user in chat.users:
             if user == address:
-                print address
                 return True
         return False
 
@@ -333,12 +330,6 @@ class I:
                         chat[7] = banned
                         chat[8] = True
         for chat in I.constructing_chats:
-            print "\n"
-            print "\tname\t" + str(chat[2])
-            print "\tppl\t" + str(chat[4])
-            print "\tusers\t" + str(chat[6])
-            print "\tbanned\t" + str(chat[8])
-            print "\n"
             if chat[2] and chat[4] and chat[6] and chat[8]:
                 Chat.Chat.join_chat(chat[1], chat[3], chat[0], chat[5], chat[7], self.sql, self)
                 if len(self.user_address_to_connection(address)) >= 7:
@@ -389,9 +380,6 @@ class I:
     def clients_current_chat(self, address):
         for connection in self.connections:
             if connection[0] == address:
-                print len(connection)
-                print connection
-                print connection[6]
                 return self.chat_uuid_to_id(connection[6])
 
     def chat_uuid_to_id(self, uuid):
@@ -413,7 +401,6 @@ class I:
     def get_connected_users_current_chat(self):
         messages = Message.Message()
         for connection in self.connections:
-            print connection[0]
             self.sendto(messages.encode(messages.REQUEST_CURRENT_CHAT), encrypt=True, ip=connection[0])
 
     def send_current_chat(self, address):

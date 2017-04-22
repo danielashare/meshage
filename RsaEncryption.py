@@ -37,7 +37,5 @@ class RsaEncryption:
     def decrypt(self, cipher_text):
         private_key = RSA.importKey(self.private_key)
         cipher = PKCS1_OAEP.new(private_key)
-        print len(cipher_text)
-        print cipher_text
         message_decrypted = cipher.decrypt(cipher_text)
         return message_decrypted
