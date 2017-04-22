@@ -475,4 +475,5 @@ class I:
 
     def update_chat_users(self, address, users, uuid):
         messages = Message.Message()
+        print "Sending " + str(users) + " to " + address + " for chat " + uuid
         self.sendto(messages.encode(messages.JOIN_CHAT_USERS, string=str([uuid, users])), ip=address, encrypt=True)

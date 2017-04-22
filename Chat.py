@@ -15,8 +15,8 @@ class Chat:
                 self.banned_users = value
 
     def add_user(self, address):
+        self.users.append(address)
         if self.me.user_in_chat(address, self):
-            self.users.append(address)
             self.sql.add_user_to_chat(address, self.chat_id)
         self.me.add_to_chat(address, self.chat_name, self.profile_picture_location, self.uuid, self.users, self.banned)
         self.me.get_connected_users_current_chat()
