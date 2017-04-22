@@ -430,5 +430,8 @@ class I:
     def set_remote_user_chat(self, address, uuid):
         for connection in self.connections:
             if connection[0] == address:
-                connection[6] = uuid
+                if len(connection) >= 7:
+                    connection[6] = uuid
+                else:
+                    connection.append(uuid)
                 return
