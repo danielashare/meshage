@@ -54,7 +54,6 @@ class Client:
             me.construct_chat(self.address[0], details[0], ppl=details[1])
         elif command == received.JOIN_CHAT_USERS:
             print time.time(), ": Received chat users from", self.address[0]
-            print string
             details = [str(string).split("'")[1]]
             details.append(str(string).split("', [")[1][:-2])
             if details[1].__contains__(","):

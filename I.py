@@ -472,6 +472,6 @@ class I:
                 return True
         return False
 
-    def update_chat_users(self, address, uuid):
+    def update_chat_users(self, address, users, uuid):
         messages = Message.Message()
         self.sendto(messages.encode(messages.JOIN_CHAT_USERS, string=str([uuid, users])), ip=address, encrypt=True)
