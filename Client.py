@@ -177,10 +177,7 @@ class Client:
                                 command, string = received.decode(str(rsa.decrypt(transmission)))
                             self.run_command(command, string, client)
                     else:
-                        try:
-                            command, string = received.decode(str(transmission).decode())
-                        except:
-                            command, string = received.decode(str(transmission))
+                        command, string = received.decode(str(transmission).decode())
                         self.run_command(command, string, client)
                 else:
                     pass
