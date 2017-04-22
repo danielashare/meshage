@@ -156,7 +156,7 @@ class SqlDatabase:
             cur.execute('SELECT userID FROM users WHERE publicIpAddress = "' + user + '"')
             data = cur.fetchall()
             for user_id in data:
-                cur.execute('INSERT INTO userToChat (userID, chatID) VALUES (' + user_id[0] + ', ' + rowid[0] + ')')
+                cur.execute('INSERT INTO userToChat (userID, chatID) VALUES (' + str(user_id[0]) + ', ' + str(rowid[0]) + ')')
         for user in banned_users:
             cur.execute('SELECT userID FROM users WHERE publicIpAddress = "' + user + '"')
             data = cur.fetchall()

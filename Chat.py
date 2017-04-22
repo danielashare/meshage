@@ -24,12 +24,15 @@ class Chat:
         me.send(message.encode(message.LEAVE_CHAT), self, encrypt=True)
         sql.remove_chat(self.chat_id)
         me.delete_chat(self)
+        me.set_current_chat(None)
 
     @staticmethod
     def join_chat(name, ppl, uuid, users, banned_users, sql, me):
         for user in users:
             me.add_connection(user, me.port)
         me.chats.append(Chat(sql.add_existing_chat(name, ppl, uuid, users, banned_users), name, ppl, uuid, sql, me, users=users, banned=banned_users))
+        me.set_current_chat(uuid)
+        me.get_connected_users_current_chat()
 
     @staticmethod
     def load_existing_chats(sql, me):

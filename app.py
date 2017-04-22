@@ -31,7 +31,7 @@ Chat.Chat.load_existing_chats(sql, me)
 # The main loop of the program
 while 1:
     # Taking text from the user
-    text = raw_input('> ')
+    text = raw_input((currentChat.chat_name if currentChat is not None else "") + '> ')
     if len(text) > 0:
         if text[0] == '/':
             if text.split(' ')[0] == '/add':

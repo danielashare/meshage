@@ -25,7 +25,7 @@ class I:
         self.sql = sql
         self.rsa = None
         self.chats = []
-        self.chats_being_constructed = []
+        self.currentChat = None
         conn = sqlite3.connect('meshage.db')
         cur = conn.cursor()
         if not self.sql.does_user_exist(id="0"):
@@ -405,3 +405,21 @@ class I:
 
     def delete_chat(self, chat):
         self.chats.remove(chat)
+
+    def get_connected_users_current_chat(self):
+        messages = Message.Message()
+        for connection in self.connections:
+            self.sendto(messages.encode(messages.REQUEST_CURRENT_CHAT), encrypt=True, ip=connection[0])
+
+    def send_current_chat(self, address):
+        messages = Message.Message()
+        self.sendto(messages.encode(messages.CURRENT_CHAT, string=self.currentChat.uuid), encrypt=True, ip=address)
+
+    def set_current_chat(self, chat):
+        self.currentChat = chat
+
+    def set_remote_user_chat(self, address, uuid):
+        for connection in self.connections:
+            if connection[0] == address:
+                connection[6] = uuid
+                return

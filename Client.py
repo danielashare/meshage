@@ -73,10 +73,18 @@ class Client:
             me.construct_chat(self.address[0], details[0], users=details[1])
         elif command == received.JOIN_CHAT_BANNED_USERS:
             print time.time(), ": Received banned chat users from", self.address[0]
-            details = [str(string)[3:].split("',")[0]]
+            details = [str(string).split("'")[1]]
             details.append(str(string).split("', [")[1][:-2])
             if details[1].__contains__(","):
-                details[1] = details[1][2:-1].split("', u'")
+                details[1] = details[1].split("'")
+                temporary_store = []
+                for detail in details[1]:
+                    try:
+                        if socket.inet_aton(detail):
+                            temporary_store.append(detail)
+                    except:
+                        pass
+                details[1] = temporary_store
             else:
                 details[1] = [details[1]]
             me.construct_chat(self.address[0], details[0], banned=details[1])
@@ -86,6 +94,10 @@ class Client:
             me.construct_file(self.address[0], string)
         elif command == received.FILE_NAME:
             me.construct_file(self.address[0], string)
+        elif command == received.REQUEST_CURRENT_CHAT:
+            me.send_current_chat(self.address[0])
+        elif command == received.CURRENT_CHAT:
+            me.set_remote_user_chat(self.address[0], string)
         elif command == received.DISCONNECT:
             print time.time(), ": Received disconnect from ", self.address[0]
             me.remove_by_address(self.address[0])
@@ -102,7 +114,6 @@ class Client:
             received = Message.Message()
             try:
                 transmission = self.socket.recv(1024)
-                print "TRANSMISSION (length: " + str(len(transmission)) + ": \n" + str(transmission) + "\n"
                 if len(transmission) is not 0:
                     if self.has_public_key:
                         if len(transmission) > 256:
@@ -110,15 +121,12 @@ class Client:
                             number_of_messages = length_of_transmission / 256
                             for x in range(1, number_of_messages + 1):
                                 command, string = received.decode(str(rsa.decrypt(transmission[(x-1) * 256:x*256]).decode()))
-                                print "\tACTUAL RECEIVE\t" + str(command) + str(string)
                                 self.run_command(command, string, client)
                         else:
                             command, string = received.decode(str(rsa.decrypt(transmission).decode()))
-                            print "\tACTUAL RECEIVE\t" + str(command) + str(string)
                             self.run_command(command, string, client)
                     else:
                         command, string = received.decode(str(transmission).decode())
-                        print "\tACTUAL RECEIVE\t" + str(command) + str(string)
                         self.run_command(command, string, client)
                 else:
                     pass

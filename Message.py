@@ -19,6 +19,8 @@ class Message:
         self.LEAVE_CHAT = "14"
         self.FILE = "15"
         self.FILE_NAME = "16"
+        self.REQUEST_CURRENT_CHAT = "17"
+        self.CURRENT_CHAT = "18"
 
     def encode(self, cmd, **kwargs):
         string = kwargs.get('string')
