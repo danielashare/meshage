@@ -137,7 +137,6 @@ class Client:
             me.count_unban(details[0], details[1], details[2])
         elif command == received.KICK:
             me.kick(string)
-            app.currentChat = None
         elif command == received.BAN:
             details = [string.split("'")[1], string.split("'")[3]]
             me.ban(details[0], details[1])

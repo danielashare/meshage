@@ -548,27 +548,28 @@ class I:
 
     def vote_kick(self, name, chat):
         messages = Message.Message()
-        self.votes.append([chat.uuid, self.name_to_address(name), "kick", len(chat.users), 0, 0])
+        self.votes.append([chat.uuid, self.name_to_address(name), "kick", len(chat.users), 1, 0])
         self.send(messages.encode(messages.VOTE_KICK, string=str([chat.uuid, self.name_to_address(name)])), chat, encrypt=True)
+        print "Sent requests to kick"
 
     def vote_ban(self, name, chat):
         messages = Message.Message()
-        self.votes.append([chat.uuid, self.name_to_address(name), "ban", len(chat.users), 0, 0])
+        self.votes.append([chat.uuid, self.name_to_address(name), "ban", len(chat.users), 1, 0])
         self.send(messages.encode(messages.VOTE_BAN, string=str([chat.uuid, self.name_to_address(name)])), chat, encrypt=True)
 
     def vote_mute(self, name, chat):
         messages = Message.Message()
-        self.votes.append([chat.uuid, self.name_to_address(name), "mute", len(chat.users), 0, 0])
+        self.votes.append([chat.uuid, self.name_to_address(name), "mute", len(chat.users), 1, 0])
         self.send(messages.encode(messages.VOTE_MUTE, string=str([chat.uuid, self.name_to_address(name)])), chat, encrypt=True)
 
     def vote_unmute(self, name, chat):
         messages = Message.Message()
-        self.votes.append([chat.uuid, self.name_to_address(name), "mute", len(chat.users), 0, 0])
+        self.votes.append([chat.uuid, self.name_to_address(name), "mute", len(chat.users), 1, 0])
         self.send(messages.encode(messages.VOTE_UNMUTE, string=str([chat.uuid, self.name_to_address(name)])), chat, encrypt=True)
 
     def vote_unban(self, name, chat):
         messages = Message.Message()
-        self.votes.append([chat.uuid, self.name_to_address(name), "mute", len(chat.users), 0, 0])
+        self.votes.append([chat.uuid, self.name_to_address(name), "mute", len(chat.users), 1, 0])
         self.send(messages.encode(messages.VOTE_UNBAN, string=str([chat.uuid, self.name_to_address(name)])), chat, encrypt=True)
 
     def respond_to_kick(self, uuid, address):
@@ -577,9 +578,11 @@ class I:
         response = raw_input("\nThere's a vote to kick " + (self.address_to_name(address) if self.address_to_name(address) else address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
         while not_correct_response:
             if response == 'y':
+                print "voted yes"
                 self.send(messages.encode(messages.RESPOND_KICK, string=str([uuid, address, "1"])), self.uuid_to_chat(uuid), encrypt=True)
                 not_correct_response = False
             elif response == 'n':
+                print "voted no"
                 self.send(messages.encode(messages.RESPOND_KICK, string=str([uuid, address, "0"])), self.uuid_to_chat(uuid), encrypt=True)
                 not_correct_response = False
             else:
@@ -642,20 +645,28 @@ class I:
                 response = raw_input("\nThere's a vote to unban " + (self.address_to_name(address) if self.address_to_name(address) else address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
 
     def count_kick(self, uuid, address, decision):
+        print "received decision from " + address
         for vote in self.votes:
             if vote[0] == uuid and vote[1] == address:
                 if decision:
+                    print "they voted yes"
                     vote[4] = vote[4] + 1
                 else:
+                    print "they voted no"
                     vote[5] = vote[5] + 1
             if vote[4] + vote[5] == vote[3]:
+                print "all votes received"
                 messages = Message.Message()
                 for_percent = (100 / vote[3]) * vote[4]
+                print "for: " + str(for_percent)
                 against_percent = (100 / vote[3]) * vote[5]
+                print "against: " + str(against_percent)
                 if for_percent > against_percent:
+                    print "kicking"
                     self.sendto(messages.encode(messages.KICK, string=uuid), ip=address, encrypt=True)
                     self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if self.address_to_name(address) else address) + " was kicked."), self.uuid_to_chat(uuid), encrypt=True)
                 elif for_percent <= against_percent:
+                    print "not kicking"
                     self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if self.address_to_name(address) else address) + " was not kicked."), self.uuid_to_chat(uuid), encrypt=True)
 
     def count_ban(self, uuid, address, decision):
