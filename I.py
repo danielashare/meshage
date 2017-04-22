@@ -451,7 +451,8 @@ class I:
 
     def is_user_and_client_in_same_chat(self, address):
         client_uuid = self.get_users_chat_uuid(address)
-        if self.currentChat.uuid == client_uuid:
+        current_chat_uuid_or_None = (str(self.currentChat.uuid) if self.currentChat is not None else "None")
+        if current_chat_uuid_or_None == client_uuid:
             return True
         else:
             return False
