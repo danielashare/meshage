@@ -25,7 +25,7 @@ class Chat:
                 self.me.update_chat_users(user, self.users, self.uuid)
 
     def exit_chat(self, me, message, sql):
-        me.send(message.encode(message.LEAVE_CHAT), self, encrypt=True)
+        me.send(message.encode(message.LEAVE_CHAT, string=self.uuid), self, encrypt=True)
         sql.remove_chat(self.chat_id)
         me.delete_chat(self)
         me.set_current_chat(None)
@@ -45,6 +45,12 @@ class Chat:
 
     def update_banned(self, banned):
         self.banned = banned
+
+    def remove_user(self, address):
+        for user in self.users:
+            if user == address:
+                self.users.remove(user)
+                self.sql.remove_user_from_chat(user, self.chat_id)
 
     @staticmethod
     def join_chat(name, ppl, uuid, users, banned_users, sql, me, invitee_address):

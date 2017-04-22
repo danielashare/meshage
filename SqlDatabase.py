@@ -169,9 +169,16 @@ class SqlDatabase:
     def add_user_to_chat(self, user_address, chat_id):
         conn = sqlite3.connect('meshage.db', check_same_thread=False)
         cur = conn.cursor()
-        print user_address
         data = self.get_user_data(user_address)
         cur.execute('INSERT INTO userToChat (userID, chatID) VALUES (' + str(data[0]) + ', ' + str(chat_id) + ')')
+        conn.commit()
+        conn.close()
+
+    def remove_user_from_chat(self, user_address, chat_id):
+        conn = sqlite3.connect('meshage.db', check_same_thread=False)
+        cur = conn.cursor()
+        data = self.get_user_data(user_address)
+        cur.execute('DELETE FROM userToChat WHERE userID = ' + str(data[0]) + ' and chatID = ' + str(chat_id))
         conn.commit()
         conn.close()
 

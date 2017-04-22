@@ -477,3 +477,9 @@ class I:
         for connection in self.connections:
             if connection[0] == address:
                 return connection[4]
+
+    def remove_from_chat(self, address, uuid):
+        for chat in self.chats:
+            if chat.uuid == uuid:
+                chat.remove_user(address)
+

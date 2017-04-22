@@ -88,6 +88,8 @@ class Client:
             me.send_current_chat(self.address[0])
         elif command == received.CURRENT_CHAT:
             me.set_remote_user_chat(self.address[0], string)
+        elif command == received.LEAVE_CHAT:
+            me.remove_from_chat(self.address[0], string)
         elif command == received.DISCONNECT:
             print time.time(), ": Received disconnect from ", self.address[0]
             me.remove_by_address(self.address[0])
