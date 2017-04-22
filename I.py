@@ -645,37 +645,28 @@ class I:
                 response = raw_input("\nThere's a vote to unban " + (self.address_to_name(address) if self.address_to_name(address) else address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
 
     def count_kick(self, uuid, address, decision):
-        print "received decision"
-        print decision
         for vote in self.votes:
             if vote[0] == uuid and vote[1] == address:
                 if decision == "1":
-                    print "they voted yes"
                     vote[4] = vote[4] + 1
                 elif decision == "0":
-                    print "they voted no"
                     vote[5] = vote[5] + 1
             if vote[4] + vote[5] == vote[3]:
-                print "all votes received"
                 messages = Message.Message()
                 for_percent = (100 / vote[3]) * vote[4]
-                print "for: " + str(for_percent)
                 against_percent = (100 / vote[3]) * vote[5]
-                print "against: " + str(against_percent)
                 if for_percent > against_percent:
-                    print "kicking"
                     self.sendto(messages.encode(messages.KICK, string=uuid), ip=address, encrypt=True)
                     self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if self.address_to_name(address) else address) + " was kicked."), self.uuid_to_chat(uuid), encrypt=True)
                 elif for_percent <= against_percent:
-                    print "not kicking"
                     self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if self.address_to_name(address) else address) + " was not kicked."), self.uuid_to_chat(uuid), encrypt=True)
 
     def count_ban(self, uuid, address, decision):
         for vote in self.votes:
             if vote[0] == uuid and vote[1] == address:
-                if decision:
+                if decision == "1":
                     vote[4] = vote[4] + 1
-                else:
+                elif decision == "0":
                     vote[5] = vote[5] + 1
             if vote[4] + vote[5] == vote[3]:
                 messages = Message.Message()
@@ -690,9 +681,9 @@ class I:
     def count_mute(self, uuid, address, decision):
         for vote in self.votes:
             if vote[0] == uuid and vote[1] == address:
-                if decision:
+                if decision == "1":
                     vote[4] = vote[4] + 1
-                else:
+                elif decision == "0":
                     vote[5] = vote[5] + 1
             if vote[4] + vote[5] == vote[3]:
                 messages = Message.Message()
@@ -707,9 +698,9 @@ class I:
     def count_unmute(self, uuid, address, decision):
         for vote in self.votes:
             if vote[0] == uuid and vote[1] == address:
-                if decision:
+                if decision == "1":
                     vote[4] = vote[4] + 1
-                else:
+                elif decision == "0":
                     vote[5] = vote[5] + 1
             if vote[4] + vote[5] == vote[3]:
                 messages = Message.Message()
@@ -724,9 +715,9 @@ class I:
     def count_unban(self, uuid, address, decision):
         for vote in self.votes:
             if vote[0] == uuid and vote[1] == address:
-                if decision:
+                if decision == "1":
                     vote[4] = vote[4] + 1
-                else:
+                elif decision == "0":
                     vote[5] = vote[5] + 1
             if vote[4] + vote[5] == vote[3]:
                 messages = Message.Message()
