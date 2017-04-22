@@ -98,19 +98,23 @@ class I:
         self.send(messages.encode(messages.FILE_NAME, string=file_name), chat, encrypt=True)
         self.send(messages.encode(messages.FILE, string=file_data), chat, encrypt=True)
 
-    def add_connection(self, host, port):
+    def add_connection(self, host, port, **kwargs):
+        silent = kwargs.get('silent')
         if not self.check_existing_connection(ip=host):
             try:
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 s.connect((host, port))
                 self.connections.append([host, port, s, "", "", ""])
                 self.send_public_key(ip=host)
-                print "Connected to " + str(host) + " on port " + str(port)
+                if not silent:
+                    print "Connected to " + str(host) + " on port " + str(port)
             except:
-                print "Host could not be found, make sure the IP address you entered is correct and that the host's Server is running."
+                if not silent:
+                    print "Host could not be found, make sure the IP address you entered is correct and that the host's Server is running."
                 return False
         else:
-            print time.time(), ": Connection to", host, "already exists"
+            if not silent:
+                print time.time(), ": Connection to", host, "already exists"
         return True
 
     def close_all(self):
@@ -248,6 +252,8 @@ class I:
         for chat in self.chats:
             if chat.chat_name == chat_name:
                 self.currentChat = chat
+                for user in chat.users:
+                    self.add_connection(user, self.port, silent=False)
                 for connection in self.connections:
                     self.sendto(messages.encode(messages.CONNECT_CHAT, string=chat.uuid), ip=connection[0], encrypt=True)
                 return chat

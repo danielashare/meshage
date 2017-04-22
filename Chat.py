@@ -41,6 +41,7 @@ class Chat:
                     self.me.add_connection(user, self.me.port)
                     print user + " joined " + self.chat_name
                     self.users.append(user)
+                    self.sql.add_user_to_chat(user, self.chat_id)
 
     def update_banned(self, banned):
         self.banned = banned
