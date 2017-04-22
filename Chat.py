@@ -22,7 +22,6 @@ class Chat:
         self.me.get_connected_users_current_chat()
         for user in self.users:
             if user is not self.me.local_ip or user is not address:
-                print "Updating " + user + " with list '" + str(self.users) + "'"
                 self.me.update_chat_users(user, self.users, self.uuid)
 
     def exit_chat(self, me, message, sql):

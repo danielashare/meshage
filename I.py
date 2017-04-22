@@ -179,59 +179,45 @@ class I:
         for key, value in kwargs.iteritems():
             if key == "ip":
                 self.sendto(messages.encode(messages.USERNAME, string=self.username), ip=value, encrypt=True)
-                print time.time(), ": Sent username to ", value
                 self.sendto(messages.encode(messages.PROFILE_PICTURE, string=str(self.profile_picture_location)), ip=value, encrypt=True)
-                print time.time(), ": Sent profile picture location (", str(self.profile_picture_location), ") to ", value
                 self.sendto(messages.encode(messages.CURRENT_CHAT, string=(str(self.currentChat.uuid) if self.currentChat is not None else "None")), ip=value, encrypt=True)
-                print self.currentChat
-                print time.time(), ": Sent chat uuid (", (str(self.currentChat.uuid) if self.currentChat is not None else "None"), ") to ", value
             elif key == "socket":
                 self.sendto(messages.encode(messages.USERNAME, string=self.username), socket=value, encrypt=True)
-                print time.time(), ": Sent username to ", value
                 self.sendto(messages.encode(messages.PROFILE_PICTURE, string=self.profile_picture_location), socket=value, encrypt=True)
-                print time.time(), ": Sent profile picture location to ", value
                 self.sendto(messages.encode(messages.CURRENT_CHAT, string=(str(self.currentChat.uuid) if self.currentChat is not None else "None")), socket=value, encrypt=True)
-                print time.time(), ": Sent chat uuid (", (str(self.currentChat.uuid) if self.currentChat is not None else "None"), ") to ", value
 
     def send_public_key(self, **kwargs):
         messages = Message.Message()
         for key, value in kwargs.iteritems():
             if key == "ip":
                 self.sendto(messages.encode(messages.PUBLIC_KEY, string=self.rsa.public_key), ip=value, encrypt=False)
-                print time.time(), ": Sent public key to ", value
             elif key == "socket":
                 self.sendto(messages.encode(messages.PUBLIC_KEY, string=self.rsa.public_key), socket=value, encrypt=False)
-                print time.time(), ": Sent public key to ", value
 
     def request_information(self, ip):
         messages = Message.Message()
         self.sendto(messages.encode(messages.REQUEST_INFO), ip=ip, encrypt=True)
-        print time.time(), ": Requested information from ", ip
 
     def request_public_key(self, ip):
         messages = Message.Message()
         self.sendto(messages.encode(messages.REQUEST_PUBLIC_KEY, ip=ip, encrypt=False))
-        print time.time(), ": Requested public key from ", ip
 
     def add_public_key(self, ip, public_key):
         for connection in self.connections:
             if connection[0] == ip:
                 connection[3] = public_key
-                print time.time(), ": Added public key to ", connection[0]
                 return
 
     def add_username(self, ip, username):
         for connection in self.connections:
             if connection[0] == ip:
                 connection[4] = username
-                print time.time(), ": Added username to ", connection[0]
                 return
 
     def add_profile_picture_location(self, ip, ppl):
         for connection in self.connections:
             if connection[0] == ip:
                 connection[5] = ppl
-                print time.time(), ": Added profile picture location to ", connection[0]
                 return
 
     def check_existing_connection(self, **kwargs):
@@ -352,7 +338,6 @@ class I:
                 self.uuid_to_chat(uuid).profile_picture_location = ppl
             if users is not None:
                 self.uuid_to_chat(uuid).update_users(users)
-                print "Received update to users from " + address + " (" + str(users) + ")"
             if banned is not None:
                 self.uuid_to_chat(uuid).update_banned(banned)
 
@@ -475,5 +460,4 @@ class I:
 
     def update_chat_users(self, address, users, uuid):
         messages = Message.Message()
-        print "Sending " + str(users) + " to " + address + " for chat " + uuid
         self.sendto(messages.encode(messages.JOIN_CHAT_USERS, string=str([uuid, users])), ip=address, encrypt=True)

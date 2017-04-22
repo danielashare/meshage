@@ -164,8 +164,6 @@ class SqlDatabase:
                 cur.execute('INSERT INTO bannedUsers (userID, chatID) VALUES (' + str(user_id[0]) + ', ' + str(rowid[0]) + ')')
         conn.commit()
         conn.close()
-        print "\t\trowid: " + str(rowid)
-        print "\t\trowid[0]: " + str(rowid[0])
         return rowid[0]
 
     def add_user_to_chat(self, user_address, chat_id):

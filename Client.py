@@ -23,37 +23,30 @@ class Client:
             if self.me.is_user_and_client_in_same_chat(self.address[0]):
                 print (self.username if self.username is not None else str(self.address[0])) + " sent: " + string
         elif command == received.PUBLIC_KEY:
-            print time.time(), ": Received public key from ", self.address[0]
             self.sql.add_to_user(self.address[0], "publicKey", string)
             me.add_public_key(self.address[0], string)
             self.has_public_key = True
             me.send_information(ip=self.address[0])
         elif command == received.USERNAME:
-            print time.time(), ": Received username from ", self.address[0]
             self.sql.add_to_user(self.address[0], "userName", string)
             me.add_username(self.address[0], string)
             self.username = string
         elif command == received.PROFILE_PICTURE:
-            print time.time(), ": Received profile picture location from ", self.address[0]
             self.sql.add_to_user(self.address[0], "profileLocation", string)
             me.add_profile_picture_location(self.address[0], string)
         elif command == received.REQUEST_INFO:
             me.send_information(ip=self.address[0])
         elif command == received.REQUEST_PUBLIC_KEY:
-            print time.time(), ": Received request for public key from ", self.address[0]
             me.send_public_key(ip=self.address[0])
         elif command == received.JOIN_CHAT_NAME:
-            print time.time(), ": Received chat name from", self.address[0]
             details = str(string).split("'")
             details = [details[1], details[3]]
             me.construct_chat(self.address[0], details[0], name=details[1])
         elif command == received.JOIN_CHAT_PPL:
-            print time.time(), ": Received chat profile picture location from", self.address[0]
             details = str(string).split("'")
             details = [details[1], details[3]]
             me.construct_chat(self.address[0], details[0], ppl=details[1])
         elif command == received.JOIN_CHAT_USERS:
-            print time.time(), ": Received chat users from", self.address[0]
             details = [str(string).split("'")[1]]
             details.append(str(string).split("', [")[1][:-2])
             if details[1].__contains__(","):
@@ -70,7 +63,6 @@ class Client:
                 details[1] = [details[1]]
             me.construct_chat(self.address[0], details[0], users=details[1])
         elif command == received.JOIN_CHAT_BANNED_USERS:
-            print time.time(), ": Received banned chat users from", self.address[0]
             details = [str(string).split("'")[1]]
             details.append(str(string).split("', [")[1][:-2])
             if details[1].__contains__(","):
@@ -87,7 +79,6 @@ class Client:
                 details[1] = [details[1]]
             me.construct_chat(self.address[0], details[0], banned=details[1])
         elif command == received.CONNECT_CHAT:
-            print str(self.address[0]) + " connected to " + string
             me.user_rejoin_chat(self.address[0], string)
         elif command == received.FILE:
             me.construct_file(self.address[0], string)
@@ -96,14 +87,11 @@ class Client:
         elif command == received.REQUEST_CURRENT_CHAT:
             me.send_current_chat(self.address[0])
         elif command == received.CURRENT_CHAT:
-            print str(self.address[0]) + "'s current chat is " + string
             me.set_remote_user_chat(self.address[0], string)
         elif command == received.DISCONNECT:
             print time.time(), ": Received disconnect from ", self.address[0]
             me.remove_by_address(self.address[0])
-            print "removed socket from connections"
             self.close()
-            print "closed socket"
             self.listen = False
             return
 
