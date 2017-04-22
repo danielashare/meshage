@@ -257,6 +257,7 @@ class I:
     def join_chat(self, chat_name):
         for chat in self.chats:
             if chat.chat_name == chat_name:
+                self.currentChat = chat
                 return chat
         return None
 
