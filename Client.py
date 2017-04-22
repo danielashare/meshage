@@ -2,7 +2,7 @@ import socket
 import time
 
 import Message
-import app
+
 
 class Client:
     def __init__(self, socket, address, client, sql):

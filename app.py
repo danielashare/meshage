@@ -86,7 +86,10 @@ while 1:
                     me.vote_unban(text.split(' ')[2])
         else:
             if currentChat is not None:
-                me.send(messages.encode(messages.MESSAGE, string=text[:212]), currentChat, encrypt=True)
-                sql.add_message(me.chat_uuid_to_id(currentChat.uuid), 0, text[:212], "")
+                if me.currentChat is not None:
+                    me.send(messages.encode(messages.MESSAGE, string=text[:212]), currentChat, encrypt=True)
+                    sql.add_message(me.chat_uuid_to_id(currentChat.uuid), 0, text[:212], "")
+                elif me.currentChat is None:
+                    currentChat = None
             else:
                 print "You're not in a chat"
