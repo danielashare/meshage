@@ -21,6 +21,21 @@ class Message:
         self.FILE_NAME = "16"
         self.REQUEST_CURRENT_CHAT = "17"
         self.CURRENT_CHAT = "18"
+        self.VOTE_MUTE = "19"
+        self.VOTE_KICK = "20"
+        self.VOTE_BAN = "21"
+        self.RESPOND_MUTE = "22"
+        self.RESPOND_KICK = "23"
+        self.RESPOND_BAN = "24"
+        self.VOTE_UNMUTE = "25"
+        self.VOTE_UNBAN = "26"
+        self.RESPOND_UNMUTE = "27"
+        self.RESPOND_UNBAN = "28"
+        self.KICK = "29"
+        self.BAN = "30"
+        self.MUTE = "31"
+        self.UNBAN = "32"
+        self.UNMUTE = "33"
 
     def encode(self, cmd, **kwargs):
         string = kwargs.get('string')

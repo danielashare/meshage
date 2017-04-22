@@ -2,7 +2,7 @@ import socket
 import time
 
 import Message
-
+import app
 
 class Client:
     def __init__(self, socket, address, client, sql):
@@ -90,6 +90,65 @@ class Client:
             me.set_remote_user_chat(self.address[0], string)
         elif command == received.LEAVE_CHAT:
             me.remove_from_chat(self.address[0], string)
+        elif command == received.VOTE_BAN:
+            details = [string.split("'")[1]]
+            details.append(string.split("'")[3])
+            me.respond_to_ban(details[0], details[1])
+        elif command == received.VOTE_KICK:
+            details = [string.split("'")[1]]
+            details.append(string.split("'")[3])
+            me.respond_to_kick(details[0], details[1])
+        elif command == received.VOTE_MUTE:
+            details = [string.split("'")[1]]
+            details.append(string.split("'")[3])
+            me.respond_to_mute(details[0], details[1])
+        elif command == received.VOTE_UNMUTE:
+            details = [string.split("'")[1]]
+            details.append(string.split("'")[3])
+            me.respond_to_unmute(details[0], details[1])
+        elif command == received.VOTE_UNBAN:
+            details = [string.split("'")[1]]
+            details.append(string.split("'")[3])
+            me.respond_to_unban(details[0], details[1])
+        elif command == received.RESPOND_KICK:
+            details = [string.split("'")[1]]
+            details.append(string.split("'")[3])
+            details.append(string.split("'")[5])
+            me.count_kick(details[0], details[1], details[2])
+        elif command == received.RESPOND_BAN:
+            details = [string.split("'")[1]]
+            details.append(string.split("'")[3])
+            details.append(string.split("'")[5])
+            me.count_ban(details[0], details[1], details[2])
+        elif command == received.RESPOND_MUTE:
+            details = [string.split("'")[1]]
+            details.append(string.split("'")[3])
+            details.append(string.split("'")[5])
+            me.count_MUTE(details[0], details[1], details[2])
+        elif command == received.RESPOND_UNMUTE:
+            details = [string.split("'")[1]]
+            details.append(string.split("'")[3])
+            details.append(string.split("'")[5])
+            me.count_unmute(details[0], details[1], details[2])
+        elif command == received.RESPOND_UNBAN:
+            details = [string.split("'")[1]]
+            details.append(string.split("'")[3])
+            details.append(string.split("'")[5])
+            me.count_unban(details[0], details[1], details[2])
+        elif command == received.KICK:
+            me.kick(string)
+            app.currentChat = None
+        elif command == received.BAN:
+            details = [string.split("'")[1], string.split("'")[3]]
+            me.ban(details[0], details[1])
+        elif command == received.MUTE:
+            me.mute(string)
+        elif command == received.UNMUTE:
+            me.unmute(string)
+        elif command == received.UNBAN:
+            details = [string.split("'")[1], string.split("'")[3]]
+            me.unban(details[0], details[1])
+
         elif command == received.DISCONNECT:
             print time.time(), ": Received disconnect from ", self.address[0]
             me.remove_by_address(self.address[0])
@@ -113,7 +172,10 @@ class Client:
                                 command, string = received.decode(str(rsa.decrypt(transmission[(x-1) * 256:x*256]).decode()))
                                 self.run_command(command, string, client)
                         else:
-                            command, string = received.decode(str(rsa.decrypt(transmission).decode()))
+                            try:
+                                command, string = received.decode(str(rsa.decrypt(transmission).decode()))
+                            except:
+                                command, string = received.decode(str(rsa.decrypt(transmission)))
                             self.run_command(command, string, client)
                     else:
                         command, string = received.decode(str(transmission).decode())

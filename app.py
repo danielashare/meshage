@@ -72,6 +72,18 @@ while 1:
                 currentChat = None
             elif text.split(' ')[0] == '/file':
                 me.send_file(text.split(' ')[1], currentChat)
+            elif text.split(' ')[0] == '/vote':
+                vote_type = text.split(' ')[1]
+                if vote_type == "kick":
+                    me.vote_kick(text.split(' ')[2])
+                elif vote_type == "ban":
+                    me.vote_ban(text.split(' ')[2])
+                elif vote_type == "mute":
+                    me.vote_mute(text.split(' ')[2])
+                elif vote_type == "unmute":
+                    me.vote_unmute(text.split(' ')[2])
+                elif vote_type == "unban":
+                    me.vote_unban(text.split(' ')[2])
         else:
             if currentChat is not None:
                 me.send(messages.encode(messages.MESSAGE, string=text[:212]), currentChat, encrypt=True)

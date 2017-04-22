@@ -12,7 +12,7 @@ class Chat:
             if key == "users":
                 self.users = value
             elif key == "banned":
-                self.banned_users = value
+                self.banned = value
 
     def add_user(self, address):
         if self.me.user_in_chat(address, self):
@@ -51,6 +51,13 @@ class Chat:
             if user == address:
                 self.users.remove(user)
                 self.sql.remove_user_from_chat(user, self.chat_id)
+
+    def ban_user(self, address):
+        self.banned.append(address)
+        self.remove_user(address)
+
+    def unban_user(self, address):
+        self.banned.remove(address)
 
     @staticmethod
     def join_chat(name, ppl, uuid, users, banned_users, sql, me, invitee_address):
