@@ -474,4 +474,4 @@ class I:
 
     def update_chat_users(self, address, users):
         messages = Message.Message()
-        self.sendto(messages.encode(messages.JOIN_CHAT_USERS, string=users), ip=address, encrypt=True)
+        self.sendto(messages.encode(messages.JOIN_CHAT_USERS, string=str(users)), ip=address, encrypt=True)
