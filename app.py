@@ -61,7 +61,7 @@ while 1:
             elif text.split(' ')[0] == '/listchat':
                 # List all currently active chats
                 me.list_chats()
-            elif text.split(' ')[0] == '/joinchat':
+            elif text.split(' ')[0] == '/join':
                 currentChat = me.join_chat(text.split(' ')[1])
                 if currentChat is None:
                     print "Chat not found"

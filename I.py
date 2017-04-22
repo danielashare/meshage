@@ -247,18 +247,61 @@ class I:
             print chat.chat_name
             print "\tUsers: " + str(chat.users)
 
-    def join_chat(self, chat_name):
+    def join_chat(self, chat_name, **kwargs):
+        number = None
+        for key, value in kwargs.iteritems():
+            if key == 'number':
+                number = value
         messages = Message.Message()
-        for chat in self.chats:
-            if chat.chat_name == chat_name:
-                self.currentChat = chat
-                for user in chat.users:
-                    if not user != self.local_ip and not user != self.public_ip:
-                        self.add_connection(user, self.port, silent=False)
-                for connection in self.connections:
-                    self.sendto(messages.encode(messages.CONNECT_CHAT, string=chat.uuid), ip=connection[0], encrypt=True)
-                return chat
-        return None
+        chats = []
+        if number is None:
+            for chat in self.chats:
+                if chat.chat_name == chat_name:
+                    chats.append(chat)
+            if len(chats) == 0:
+                return None
+            elif len(chats) == 1:
+                for chat in self.chats:
+                    if chat.chat_name == chat_name:
+                        self.currentChat = chat
+                        for user in chat.users:
+                            if not user != self.local_ip and not user != self.public_ip:
+                                self.add_connection(user, self.port, silent=False)
+                        for connection in self.connections:
+                            self.sendto(messages.encode(messages.CONNECT_CHAT, string=chat.uuid), ip=connection[0], encrypt=True)
+                        return chat
+            elif len(chats) > 1:
+                print "Which one?"
+                chat_counter = 0
+                for chat in chats:
+                    chat_counter = chat_counter + 1
+                    print chat_counter
+                    print "\tName:\t" + chat.chat_name
+                    print "\tUUID:\t" + chat.uuid
+                    print "\tUsers:\t" + str(chat.users)
+                    print "\tBanned:\t" + str(chat.banned)
+                    print "\tPic:\t" + chat.profile_picture_location
+                not_correct_input = True
+                while not_correct_input:
+                    chosen_chat = raw_input("Enter the number of which chat you'd like to join:")
+                    if chosen_chat.isdigit():
+                        if int(chosen_chat) > 0 and int(chosen_chat) <= chat_counter:
+                            not_correct_input = False
+                            return self.join_chat(chat_name, number=int(chosen_chat) - 1)
+        else:
+            current_number = 0
+            for chat in self.chats:
+                if chat.chat_name == chat_name:
+                    if current_number == number:
+                        self.currentChat = chat
+                        for user in chat.users:
+                            if not user != self.local_ip and not user != self.public_ip:
+                                self.add_connection(user, self.port, silent=False)
+                        for connection in self.connections:
+                            self.sendto(messages.encode(messages.CONNECT_CHAT, string=chat.uuid), ip=connection[0], encrypt=True)
+                        return chat
+                    else:
+                        current_number = current_number + 1
 
     @staticmethod
     def user_in_chat(address, chat):
