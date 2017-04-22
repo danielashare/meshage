@@ -646,12 +646,13 @@ class I:
 
     def count_kick(self, uuid, address, decision):
         print "received decision"
+        print decision
         for vote in self.votes:
             if vote[0] == uuid and vote[1] == address:
-                if decision == 1:
+                if decision == "1":
                     print "they voted yes"
                     vote[4] = vote[4] + 1
-                elif decision == 0:
+                elif decision == "0":
                     print "they voted no"
                     vote[5] = vote[5] + 1
             if vote[4] + vote[5] == vote[3]:
