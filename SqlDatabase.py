@@ -169,6 +169,7 @@ class SqlDatabase:
     def add_user_to_chat(self, user_address, chat_id):
         conn = sqlite3.connect('meshage.db', check_same_thread=False)
         cur = conn.cursor()
+        print user_address
         data = self.get_user_data(user_address)
         cur.execute('INSERT INTO userToChat (userID, chatID) VALUES (' + str(data[0]) + ', ' + str(chat_id) + ')')
         conn.commit()

@@ -253,7 +253,8 @@ class I:
             if chat.chat_name == chat_name:
                 self.currentChat = chat
                 for user in chat.users:
-                    self.add_connection(user, self.port, silent=False)
+                    if not user != self.local_ip and not user != self.public_ip:
+                        self.add_connection(user, self.port, silent=False)
                 for connection in self.connections:
                     self.sendto(messages.encode(messages.CONNECT_CHAT, string=chat.uuid), ip=connection[0], encrypt=True)
                 return chat
@@ -298,7 +299,7 @@ class I:
                 users = value
             elif key == 'banned':
                 banned = value
-        if not self.does_chat_exist(uuid):
+        if not self.does_chat_exist(uuid) and len(I.constructing_chats) is not 0:
             if len(I.constructing_chats) is not 0:
                 for chat in I.constructing_chats:
                     if uuid == chat[0]:
