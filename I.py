@@ -182,15 +182,15 @@ class I:
                 print time.time(), ": Sent username to ", value
                 self.sendto(messages.encode(messages.PROFILE_PICTURE, string=str(self.profile_picture_location)), ip=value, encrypt=True)
                 print time.time(), ": Sent profile picture location (", str(self.profile_picture_location), ") to ", value
-                self.sendto(messages.encode(messages.CURRENT_CHAT, string=str(self.currentChat.uuid)), ip=value, encrypt=True)
-                print time.time(), ": Sent chat uuid (", str(self.currentChat.uuid), ") to ", value
+                self.sendto(messages.encode(messages.CURRENT_CHAT, string=(str(self.currentChat.uuid) if self.currentChat is not None else "None")), ip=value, encrypt=True)
+                print time.time(), ": Sent chat uuid (", (str(self.currentChat.uuid) if self.currentChat is not None else "None"), ") to ", value
             elif key == "socket":
                 self.sendto(messages.encode(messages.USERNAME, string=self.username), socket=value, encrypt=True)
                 print time.time(), ": Sent username to ", value
                 self.sendto(messages.encode(messages.PROFILE_PICTURE, string=self.profile_picture_location), socket=value, encrypt=True)
                 print time.time(), ": Sent profile picture location to ", value
-                self.sendto(messages.encode(messages.CURRENT_CHAT, string=str(self.currentChat.uuid)), socket=value, encrypt=True)
-                print time.time(), ": Sent chat uuid (", str(self.currentChat.uuid), ") to ", value
+                self.sendto(messages.encode(messages.CURRENT_CHAT, string=(str(self.currentChat.uuid) if self.currentChat is not None else "None")), socket=value, encrypt=True)
+                print time.time(), ": Sent chat uuid (", (str(self.currentChat.uuid) if self.currentChat is not None else "None"), ") to ", value
 
     def send_public_key(self, **kwargs):
         messages = Message.Message()
