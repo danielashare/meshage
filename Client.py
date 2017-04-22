@@ -53,9 +53,7 @@ class Client:
             me.construct_chat(self.address[0], details[0], ppl=details[1])
         elif command == received.JOIN_CHAT_USERS:
             print time.time(), ": Received chat users from", self.address[0]
-            print "\treceived string:\t" + str(string)
             details = [str(string).split("'")[1]]
-            print "\tdissected string:\t" + str(str(string).split("', [")[1][:-2])
             details.append(str(string).split("', [")[1][:-2])
             if details[1].__contains__(","):
                 details[1] = details[1].split("'")
@@ -69,7 +67,6 @@ class Client:
                 details[1] = temporary_store
             else:
                 details[1] = [details[1]]
-                print "\tdoesn't contain ','\t" + str([details[1]])
             me.construct_chat(self.address[0], details[0], users=details[1])
         elif command == received.JOIN_CHAT_BANNED_USERS:
             print time.time(), ": Received banned chat users from", self.address[0]
@@ -114,8 +111,6 @@ class Client:
             received = Message.Message()
             try:
                 transmission = self.socket.recv(1024)
-                print len(transmission)
-                print transmission
                 if len(transmission) is not 0:
                     if self.has_public_key:
                         if len(transmission) > 256:
