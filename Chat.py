@@ -40,6 +40,7 @@ class Chat:
             if user != self.me.local_ip or user != self.me.public_ip:
                 if not self.me.check_existing_connection(ip=user):
                     self.me.add_connection(user, self.me.port)
+                    self.users.append(user)
 
     def update_banned(self, banned):
         self.banned = banned
