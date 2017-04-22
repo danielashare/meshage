@@ -54,7 +54,7 @@ class Client:
         elif command == received.JOIN_CHAT_USERS:
             print time.time(), ": Received chat users from", self.address[0]
             print "\treceived string:\t" + str(string)
-            details = [str(string)[3:].split("',")[0]]
+            details = [str(string).split("'")[1]]
             print "\tdissected string:\t" + str(str(string).split("', [")[1][:-2])
             details.append(str(string).split("', [")[1][:-2])
             if details[1].__contains__(","):
