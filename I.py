@@ -588,7 +588,7 @@ class I:
     def respond_to_ban(self, uuid, address):
         messages = Message.Message()
         not_correct_response = True
-        response = raw_input("\nThere's a vote to ban " + self.(self.address_to_name(address) if not self.address_to_name(address) else address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
+        response = raw_input("\nThere's a vote to ban " + (self.address_to_name(address) if not self.address_to_name(address) else address) + " from " + self.uuid_to_chat(uuid).chat_name + ", enter 'y' to agree or 'n' to disagree: ")
         while not_correct_response:
             if response == 'y':
                 self.send(messages.encode(messages.RESPOND_BAN, string=str([uuid, address, "1"])), self.uuid_to_chat(uuid), encrypt=True)
