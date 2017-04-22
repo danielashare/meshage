@@ -162,6 +162,8 @@ class Client:
             received = Message.Message()
             try:
                 transmission = self.socket.recv(1024)
+                print len(transmission)
+                print transmission
                 if len(transmission) is not 0:
                     if self.has_public_key:
                         if len(transmission) > 256:
