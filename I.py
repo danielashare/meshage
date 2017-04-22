@@ -299,7 +299,7 @@ class I:
                 users = value
             elif key == 'banned':
                 banned = value
-        if not self.does_chat_exist(uuid) and len(I.constructing_chats) is not 0:
+        if not self.does_chat_exist(uuid):
             if len(I.constructing_chats) is not 0:
                 for chat in I.constructing_chats:
                     if uuid == chat[0]:
@@ -340,13 +340,17 @@ class I:
                     I.constructing_chats.remove(chat)
         else:
             if name is not None:
-                self.uuid_to_chat(uuid).chat_name = name
+                if self.uuid_to_chat(uuid):
+                    self.uuid_to_chat(uuid).chat_name = name
             if ppl is not None:
-                self.uuid_to_chat(uuid).profile_picture_location = ppl
+                if self.uuid_to_chat(uuid):
+                    self.uuid_to_chat(uuid).profile_picture_location = ppl
             if users is not None:
-                self.uuid_to_chat(uuid).update_users(users)
+                if self.uuid_to_chat(uuid):
+                    self.uuid_to_chat(uuid).update_users(users)
             if banned is not None:
-                self.uuid_to_chat(uuid).update_banned(banned)
+                if self.uuid_to_chat(uuid):
+                    self.uuid_to_chat(uuid).update_banned(banned)
 
     def construct_file(self, address, **kwargs):
         name = None
