@@ -257,9 +257,12 @@ class I:
             print "\tUsers: " + str(chat.users)
 
     def join_chat(self, chat_name):
+        messages = Message.Message()
         for chat in self.chats:
             if chat.chat_name == chat_name:
                 self.currentChat = chat
+                for connection in self.connections:
+                    self.sendto(messages.encode(messages.CONNECT_CHAT, chat.uuid), ip=connection[0], encrypt=True)
                 return chat
         return None
 
