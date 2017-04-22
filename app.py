@@ -75,15 +75,15 @@ while 1:
             elif text.split(' ')[0] == '/vote':
                 vote_type = text.split(' ')[1]
                 if vote_type == "kick":
-                    me.vote_kick(text.split(' ')[2])
+                    me.vote_kick(text.split(' ')[2], currentChat)
                 elif vote_type == "ban":
-                    me.vote_ban(text.split(' ')[2])
+                    me.vote_ban(text.split(' ')[2], currentChat)
                 elif vote_type == "mute":
-                    me.vote_mute(text.split(' ')[2])
+                    me.vote_mute(text.split(' ')[2], currentChat)
                 elif vote_type == "unmute":
-                    me.vote_unmute(text.split(' ')[2])
+                    me.vote_unmute(text.split(' ')[2], currentChat)
                 elif vote_type == "unban":
-                    me.vote_unban(text.split(' ')[2])
+                    me.vote_unban(text.split(' ')[2], currentChat)
         else:
             if currentChat is not None:
                 if me.currentChat is not None:
