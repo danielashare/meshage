@@ -15,8 +15,8 @@ class Chat:
                 self.banned_users = value
 
     def add_user(self, address):
-        self.users.append(address)
         if self.me.user_in_chat(address, self):
+            self.users.append(address)
             self.sql.add_user_to_chat(address, self.chat_id)
         self.me.add_to_chat(address, self.chat_name, self.profile_picture_location, self.uuid, self.users, self.banned)
         self.me.get_connected_users_current_chat()
@@ -54,6 +54,12 @@ class Chat:
             if user != me.local_ip or user != me.public_ip:
                 if not me.check_existing_connection(ip=user):
                     me.add_connection(user, me.port)
+        found = False
+        for user in users:
+            if user == me.local_ip or user == me.public_ip:
+                return True
+        if not found:
+            users.append(me.local_ip)
         me.chats.append(Chat(sql.add_existing_chat(name, ppl, uuid, users, banned_users), name, ppl, uuid, sql, me, users=users, banned=banned_users))
         me.get_connected_users_current_chat()
 
