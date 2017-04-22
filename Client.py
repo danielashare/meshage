@@ -81,9 +81,9 @@ class Client:
         elif command == received.CONNECT_CHAT:
             me.user_rejoin_chat(self.address[0], string)
         elif command == received.FILE:
-            me.construct_file(self.address[0], string)
+            me.construct_file(self.address[0], data=string)
         elif command == received.FILE_NAME:
-            me.construct_file(self.address[0], string)
+            me.construct_file(self.address[0], name=string)
         elif command == received.REQUEST_CURRENT_CHAT:
             me.send_current_chat(self.address[0])
         elif command == received.CURRENT_CHAT:
