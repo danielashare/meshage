@@ -745,6 +745,7 @@ class I:
         if address == self.public_ip or address == self.local_ip:
             print "You've been banned from " + self. uuid_to_chat(uuid).chat_name
             self.uuid_to_chat(uuid).exit_chat(self, Message.Message(), self.sql)
+            self.currentChat = None
         else:
             self.uuid_to_chat(uuid).ban_user(address)
 
