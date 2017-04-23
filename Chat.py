@@ -15,14 +15,17 @@ class Chat:
                 self.banned = value
 
     def add_user(self, address):
-        if self.me.user_in_chat(address, self):
-            self.users.append(address)
-            self.sql.add_user_to_chat(address, self.chat_id)
-        self.me.add_to_chat(address, self.chat_name, self.profile_picture_location, self.uuid, self.users, self.banned)
-        self.me.get_connected_users_current_chat()
-        for user in self.users:
-            if user is not self.me.local_ip or user is not address:
-                self.me.update_chat_users(user, self.users, self.uuid)
+        if not banned(address):
+            if self.me.user_in_chat(address, self):
+                self.users.append(address)
+                self.sql.add_user_to_chat(address, self.chat_id)
+            self.me.add_to_chat(address, self.chat_name, self.profile_picture_location, self.uuid, self.users, self.banned)
+            self.me.get_connected_users_current_chat()
+            for user in self.users:
+                if user is not self.me.local_ip or user is not address:
+                    self.me.update_chat_users(user, self.users, self.uuid)
+        else:
+            print "That user is currently banned from this chat"
 
     def exit_chat(self, me, message, sql):
         me.send(message.encode(message.LEAVE_CHAT, string=self.uuid), self, encrypt=True)
@@ -51,6 +54,12 @@ class Chat:
             if user == address:
                 self.users.remove(user)
                 self.sql.remove_user_from_chat(user, self.chat_id)
+
+    def banned(self,address):
+        for banned in self.banned:
+            if banned == address:
+                return True
+        return False
 
     def ban_user(self, address):
         self.banned.append(address)
