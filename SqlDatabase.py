@@ -195,6 +195,7 @@ class SqlDatabase:
         cur.execute('DELETE FROM userToChat WHERE chatID = ' + str(chat_id))
         cur.execute('DELETE FROM bannedUsers WHERE chatID = ' + str(chat_id))
         cur.execute('DELETE FROM chats WHERE chatID = ' + str(chat_id))
+        cur.execute('DELETE FROM messages WHERE chat ID = ' + str(chat_id))
         conn.commit()
         conn.close()
 

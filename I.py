@@ -287,7 +287,6 @@ class I:
                         for connection in self.connections:
                             self.sendto(messages.encode(messages.CONNECT_CHAT, string=chat.uuid), ip=connection[0], encrypt=True)
                         sent_messages = self.sql.get_messages(chat.chat_id, 100)
-                        sent_messages.reverse()
                         for message in sent_messages:
                             print message[0] + " sent: " + message[1]
                         return chat
