@@ -73,7 +73,7 @@ class I:
 
     def is_muted_chat(self, uuid):
         for chat in self.muted_chats:
-            if chat.uuid == uuid:
+            if chat == uuid:
                 return True
         return False
 
