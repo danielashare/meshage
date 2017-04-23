@@ -91,7 +91,10 @@ class I:
         if ip is not None:
             for connection in self.connections:
                 if connection[0] == ip:
-                    connection[2].sendall(self.rsa.encrypt(connection[3], string) if encrypt else string)
+                    try:
+                        connection[2].sendall(self.rsa.encrypt(connection[3], string) if encrypt else string)
+                    except:
+                        pass
                     return
         elif socket is not None:
             for connection in self.connections:
@@ -674,6 +677,7 @@ class I:
                 against_percent = (100 / vote[3]) * vote[5]
                 if for_percent > against_percent:
                     self.send(messages.encode(messages.BAN, string=str([uuid, address])), self.uuid_to_chat(uuid), encrypt=True)
+                    self.uuid_to_chat(uuid).ban_users(address)
                     self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if self.address_to_name(address) else address) + " was banned."), self.uuid_to_chat(uuid), encrypt=True)
                 elif for_percent <= against_percent:
                     self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if self.address_to_name(address) else address) + " was not banned."), self.uuid_to_chat(uuid), encrypt=True)
@@ -725,6 +729,7 @@ class I:
                 against_percent = (100 / vote[3]) * vote[5]
                 if for_percent > against_percent:
                     self.send(messages.encode(messages.UNBAN, string=str([uuid, address])), self.uuid_to_chat(uuid), encrypt=True)
+                    self.uuid_to_chat(uuid).unban_user(address)
                     self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if self.address_to_name(address) else address) + " was unbanned."), self.uuid_to_chat(uuid), encrypt=True)
                 elif for_percent <= against_percent:
                     self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if self.address_to_name(address) else address) + " was not unbanned."), self.uuid_to_chat(uuid), encrypt=True)
