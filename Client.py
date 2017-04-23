@@ -124,7 +124,7 @@ class Client:
             details = [string.split("'")[1]]
             details.append(string.split("'")[3])
             details.append(string.split("'")[5])
-            me.count_MUTE(details[0], details[1], details[2])
+            me.count_mute(details[0], details[1], details[2])
         elif command == received.RESPOND_UNMUTE:
             details = [string.split("'")[1]]
             details.append(string.split("'")[3])
