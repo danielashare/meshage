@@ -107,6 +107,7 @@ class Client:
             details.append(string.split("'")[3])
             me.respond_to_unmute(details[0], details[1])
         elif command == received.VOTE_UNBAN:
+            print string
             details = [string.split("'")[1]]
             details.append(string.split("'")[3])
             me.respond_to_unban(details[0], details[1])

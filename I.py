@@ -262,6 +262,7 @@ class I:
         for chat in self.chats:
             print chat.chat_name
             print "\tUsers: " + str(chat.users)
+            print "\tBanned: " + str(chat.banned)
 
     def join_chat(self, chat_name, **kwargs):
         number = None
@@ -285,6 +286,10 @@ class I:
                                 self.add_connection(user, self.port, silent=False)
                         for connection in self.connections:
                             self.sendto(messages.encode(messages.CONNECT_CHAT, string=chat.uuid), ip=connection[0], encrypt=True)
+                        sent_messages = self.sql.get_messages(chat.chat_id, 100)
+                        sent_messages.reverse()
+                        for message in sent_messages:
+                            print message[0] + " sent: " + message[1]
                         return chat
             elif len(chats) > 1:
                 print "Which one?"

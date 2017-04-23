@@ -197,3 +197,11 @@ class SqlDatabase:
         cur.execute('DELETE FROM chats WHERE chatID = ' + str(chat_id))
         conn.commit()
         conn.close()
+
+    def get_messages(self, chat_id, number):
+        conn = sqlite3.connect('meshage.db', check_same_thread=False)
+        cur = conn.cursor()
+        cur.execute('SELECT users.userName, messages.message FROM messages INNER JOIN users ON messages.userID = users.userID WHERE chatID = ' + str(chat_id) + ' ORDER BY messageID ASC LIMIT ' + str(number))
+        data = cur.fetchall()
+        conn.close()
+        return data
