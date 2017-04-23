@@ -1,4 +1,5 @@
 import thread
+import sys
 
 import SqlDatabase
 import I
@@ -46,15 +47,10 @@ while 1:
             elif text.split(' ')[0] == '/exit':
                 # close all connections to remote clients
                 me.close_all()
+                sys.exit()
             elif text.split(' ')[0] == '/list':
                 # list all current active connections
                 me.list_all()
-            elif text.split(' ')[0] == '/sendinfo':
-                # send information about Client
-                me.send_information(ip=text.split(' ')[1])
-            elif text.split(' ')[0] == '/getusersql':
-                # DEBUG list sql database details for IP Address
-                print sql.get_user_data(text.split(' ')[1])
             elif text.split(' ')[0] == '/scan':
                 # Start Multi Cast Server to find local clients
                 MultiCastServerInstance = MultiCastServer.MultiCastServer(me)
@@ -68,10 +64,12 @@ while 1:
             elif text.split(' ')[0] == '/createchat':
                 Chat.Chat.create_chat(text.split(' ')[1], text.split(' ')[2], sql, me)
             elif text.split(' ')[0] == '/exitchat':
-                currentChat.exit_chat(me, messages, sql)
-                currentChat = None
+                if currentChat is not None:
+                    currentChat.exit_chat(me, messages, sql)
+                    currentChat = None
             elif text.split(' ')[0] == '/file':
-                me.send_file(text.split(' ')[1], currentChat)
+                if currentChat is not None:
+                    me.send_file(text.split(' ')[1], currentChat)
             elif text.split(' ')[0] == '/vote':
                 vote_type = text.split(' ')[1]
                 if vote_type == "kick":
@@ -84,6 +82,8 @@ while 1:
                     me.vote_unmute(text.split(' ')[2], currentChat)
                 elif vote_type == "unban":
                     me.vote_unban(text.split(' ')[2], currentChat)
+                else:
+                    print "Not a recognised vote type"
         else:
             if currentChat is not None:
                 if me.currentChat is not None:

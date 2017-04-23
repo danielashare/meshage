@@ -2,6 +2,7 @@ import socket
 import sqlite3
 from urllib2 import urlopen
 import time
+import os.path
 
 import RsaEncryption
 import Message
@@ -105,14 +106,17 @@ class I:
     def send_file(self, file_location, chat):
         messages = Message.Message()
         file_location = file_location
-        file_object = open(file_location, "rb")
-        file_name = file_object.name
-        file_data = file_object.read()
-        if len(file_data) > 212:
-            print "File too large"
-            return
-        self.send(messages.encode(messages.FILE_NAME, string=file_name), chat, encrypt=True)
-        self.send(messages.encode(messages.FILE, string=file_data), chat, encrypt=True)
+        if os.path.isfile(file_location):
+            file_object = open(file_location, "rb")
+            file_name = file_object.name
+            file_data = file_object.read()
+            if len(file_data) > 212:
+                print "File too large"
+                return
+            self.send(messages.encode(messages.FILE_NAME, string=file_name), chat, encrypt=True)
+            self.send(messages.encode(messages.FILE, string=file_data), chat, encrypt=True)
+        else:
+            print "File doesn't exist"
 
     def add_connection(self, host, port, **kwargs):
         silent = kwargs.get('silent')
@@ -158,6 +162,10 @@ class I:
                 self.connections.remove(connection)
 
     def set_username(self, name):
+        while name == '':
+            print "It can't be blank, try again"
+            print "Create username: "
+            name = raw_input("> ")
         self.username = name
         conn = sqlite3.connect('meshage.db')
         conn.execute('UPDATE users SET userName = "' + self.username + '" WHERE userID = 0')
@@ -555,29 +563,44 @@ class I:
 
     def vote_kick(self, name, chat):
         messages = Message.Message()
-        self.votes.append([chat.uuid, self.name_to_address(name), "kick", len(chat.users), 1, 0])
-        self.send(messages.encode(messages.VOTE_KICK, string=str([chat.uuid, self.name_to_address(name)])), chat, encrypt=True)
-        print "Sent requests to kick"
+        target = None
+        target = self.name_to_address(name)
+        if target is not None:
+            self.votes.append([chat.uuid, self.name_to_address(name), "kick", len(chat.users), 1, 0])
+            self.send(messages.encode(messages.VOTE_KICK, string=str([chat.uuid, self.name_to_address(name)])), chat, encrypt=True)
+            print "Sent requests to kick"
 
     def vote_ban(self, name, chat):
         messages = Message.Message()
-        self.votes.append([chat.uuid, self.name_to_address(name), "ban", len(chat.users), 1, 0])
-        self.send(messages.encode(messages.VOTE_BAN, string=str([chat.uuid, self.name_to_address(name)])), chat, encrypt=True)
+        target = None
+        target = self.name_to_address(name)
+        if target is not None:
+            self.votes.append([chat.uuid, self.name_to_address(name), "ban", len(chat.users), 1, 0])
+            self.send(messages.encode(messages.VOTE_BAN, string=str([chat.uuid, self.name_to_address(name)])), chat, encrypt=True)
 
     def vote_mute(self, name, chat):
         messages = Message.Message()
-        self.votes.append([chat.uuid, self.name_to_address(name), "mute", len(chat.users), 1, 0])
-        self.send(messages.encode(messages.VOTE_MUTE, string=str([chat.uuid, self.name_to_address(name)])), chat, encrypt=True)
+        target = None
+        target = self.name_to_address(name)
+        if target is not None:
+            self.votes.append([chat.uuid, self.name_to_address(name), "mute", len(chat.users), 1, 0])
+            self.send(messages.encode(messages.VOTE_MUTE, string=str([chat.uuid, self.name_to_address(name)])), chat, encrypt=True)
 
     def vote_unmute(self, name, chat):
         messages = Message.Message()
-        self.votes.append([chat.uuid, self.name_to_address(name), "mute", len(chat.users), 1, 0])
-        self.send(messages.encode(messages.VOTE_UNMUTE, string=str([chat.uuid, self.name_to_address(name)])), chat, encrypt=True)
+        target = None
+        target = self.name_to_address(name)
+        if target is not None:
+            self.votes.append([chat.uuid, self.name_to_address(name), "mute", len(chat.users), 1, 0])
+            self.send(messages.encode(messages.VOTE_UNMUTE, string=str([chat.uuid, self.name_to_address(name)])), chat, encrypt=True)
 
     def vote_unban(self, name, chat):
         messages = Message.Message()
-        self.votes.append([chat.uuid, self.name_to_address(name), "mute", len(chat.users), 1, 0])
-        self.send(messages.encode(messages.VOTE_UNBAN, string=str([chat.uuid, self.name_to_address(name)])), chat, encrypt=True)
+        target = None
+        target = self.name_to_address(name)
+        if target is not None:
+            self.votes.append([chat.uuid, self.name_to_address(name), "mute", len(chat.users), 1, 0])
+            self.send(messages.encode(messages.VOTE_UNBAN, string=str([chat.uuid, self.name_to_address(name)])), chat, encrypt=True)
 
     def respond_to_kick(self, uuid, address):
         messages = Message.Message()
