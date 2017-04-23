@@ -677,7 +677,7 @@ class I:
                 against_percent = (100 / vote[3]) * vote[5]
                 if for_percent > against_percent:
                     self.send(messages.encode(messages.BAN, string=str([uuid, address])), self.uuid_to_chat(uuid), encrypt=True)
-                    self.uuid_to_chat(uuid).ban_users(address)
+                    self.uuid_to_chat(uuid).ban_user(address)
                     self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if self.address_to_name(address) else address) + " was banned."), self.uuid_to_chat(uuid), encrypt=True)
                 elif for_percent <= against_percent:
                     self.send(messages.encode(messages.MESSAGE, string="[VOTE] " + (self.address_to_name(address) if self.address_to_name(address) else address) + " was not banned."), self.uuid_to_chat(uuid), encrypt=True)
